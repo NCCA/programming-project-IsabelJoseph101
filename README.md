@@ -1,4 +1,4 @@
-# Isabel Joseph (s5221926) Assignment Simple Game
+# Isabel Joseph (s5221926) Assignment 
 
 ## Overview
-From my project I'm going to write a program to create a simple asteroids game
+Simulating realisic hair, where i will implement a system that will generate and animate long hair. Using gravity, collision and force to influcence the movement.
