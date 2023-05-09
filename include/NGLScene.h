@@ -12,6 +12,7 @@
 #include <ngl/BBox.h>
 
 
+
 //----------------------------------------------------------------------------------------------------------------------
 /// @file NGLScene.h
 /// @brief this class inherits from the Qt OpenGLWindow and allows us to use NGL to draw OpenGL
@@ -55,6 +56,9 @@ public:
   // /// @brief this is called everytime we want to draw the scene
   // //----------------------------------------------------------------------------------------------------------------------
   void resizeGL(int _w, int _h) override;
+  void mapBlockDraw(ngl::Vec4 fillColour,ngl::Vec4 outlineColour, float cubeSize);
+
+  void mapBlockFunc(BlockSelector* mapBlockot, int countNumBlock, ngl::Vec4 fillColour, ngl::Vec4 outlineColour, ngl::Vec3 blockPosition);
 
   
   
@@ -107,8 +111,12 @@ private:
   int m_moveTimer;
   int m_numBlockSelector;   
   // boxxx
+
+
   BlockSelector mySelector;
   BlockSelector mapBox;
+  
+
 
   
 
@@ -152,10 +160,20 @@ private:
   void timerEvent(QTimerEvent *_event );
   void resetBlockSelector();
   void checkBlockSelectorCollisions();
-  int CollisionTest();
+  void CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks);
+  
 
-
-
+  float pickUpScale = 0.6f;
+  int numMap = 2000;
+  int modeToDraw = 2;
+  float globalBlockScale = 0.9f;
+  BlockSelector mapBlock[2000];
+  int timeCount = 0;
+  int timeIncrease = 0;
+  float xEnemyLoc = -9;
+  float zEnemyLoc = -6;
+  int score = 0;
+ 
 
 
 };

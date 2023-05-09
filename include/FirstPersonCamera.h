@@ -15,7 +15,7 @@ class FirstPersonCamera
     ngl::Vec3 getEye() const noexcept { return m_eye;}
     void updateCameraVectors() noexcept;
 
-    void move(float _x, float _y, float _deltaTime);
+    void move(float _x, float _y, float _z, float _deltaTime);
     void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) noexcept;
     void processMouseScroll(float _yoffset) noexcept;
   private :

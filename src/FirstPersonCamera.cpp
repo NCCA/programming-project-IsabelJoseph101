@@ -48,11 +48,12 @@ void FirstPersonCamera::updateCameraVectors() noexcept
 }
 
 
-void FirstPersonCamera::move(float _x, float _y,float _deltaTime)
+void FirstPersonCamera::move(float _x, float _y, float _z, float _deltaTime)
 {
   float velocity = m_speed * _deltaTime;
   m_eye += m_front * velocity*_x;
   m_eye += m_right * velocity*_y;
+  m_eye += m_up * velocity*_z;
   updateCameraVectors();
 
 
