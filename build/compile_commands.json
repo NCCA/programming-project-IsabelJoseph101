@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/s5221926/CFA/programming-project-IsabelJoseph101/build",
+  "command": "/opt/rh/gcc-toolset-11/root/usr/bin/g++ -DADDLARGEMODELS -DFMT_HEADER_ONLY=1 -DGLM_ENABLE_EXPERIMENTAL -DOIIO_STATIC_DEFINE=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -IFirstPersonCamera_autogen/include -I../include -I/home/s5221926/NGL/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include/Imath -isystem /opt/Qt/5.15.2/gcc_64/include -isystem /opt/Qt/5.15.2/gcc_64/include/QtWidgets -isystem /opt/Qt/5.15.2/gcc_64/include/QtGui -isystem /opt/Qt/5.15.2/gcc_64/include/QtCore -isystem /opt/Qt/5.15.2/gcc_64/./mkspecs/linux-g++ -isystem /opt/Qt/5.15.2/gcc_64/include/QtOpenGL -g -pthread -fPIC -std=gnu++17 -o CMakeFiles/FirstPersonCamera.dir/FirstPersonCamera_autogen/mocs_compilation.cpp.o -c /home/s5221926/CFA/programming-project-IsabelJoseph101/build/FirstPersonCamera_autogen/mocs_compilation.cpp",
+  "file": "/home/s5221926/CFA/programming-project-IsabelJoseph101/build/FirstPersonCamera_autogen/mocs_compilation.cpp"
+},
+{
+  "directory": "/home/s5221926/CFA/programming-project-IsabelJoseph101/build",
+  "command": "/opt/rh/gcc-toolset-11/root/usr/bin/g++ -DADDLARGEMODELS -DFMT_HEADER_ONLY=1 -DGLM_ENABLE_EXPERIMENTAL -DOIIO_STATIC_DEFINE=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -IFirstPersonCamera_autogen/include -I../include -I/home/s5221926/NGL/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include/Imath -isystem /opt/Qt/5.15.2/gcc_64/include -isystem /opt/Qt/5.15.2/gcc_64/include/QtWidgets -isystem /opt/Qt/5.15.2/gcc_64/include/QtGui -isystem /opt/Qt/5.15.2/gcc_64/include/QtCore -isystem /opt/Qt/5.15.2/gcc_64/./mkspecs/linux-g++ -isystem /opt/Qt/5.15.2/gcc_64/include/QtOpenGL -g -pthread -fPIC -std=gnu++17 -o CMakeFiles/FirstPersonCamera.dir/src/main.cpp.o -c /home/s5221926/CFA/programming-project-IsabelJoseph101/src/main.cpp",
+  "file": "/home/s5221926/CFA/programming-project-IsabelJoseph101/src/main.cpp"
+},
+{
+  "directory": "/home/s5221926/CFA/programming-project-IsabelJoseph101/build",
+  "command": "/opt/rh/gcc-toolset-11/root/usr/bin/g++ -DADDLARGEMODELS -DFMT_HEADER_ONLY=1 -DGLM_ENABLE_EXPERIMENTAL -DOIIO_STATIC_DEFINE=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -IFirstPersonCamera_autogen/include -I../include -I/home/s5221926/NGL/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include/Imath -isystem /opt/Qt/5.15.2/gcc_64/include -isystem /opt/Qt/5.15.2/gcc_64/include/QtWidgets -isystem /opt/Qt/5.15.2/gcc_64/include/QtGui -isystem /opt/Qt/5.15.2/gcc_64/include/QtCore -isystem /opt/Qt/5.15.2/gcc_64/./mkspecs/linux-g++ -isystem /opt/Qt/5.15.2/gcc_64/include/QtOpenGL -g -pthread -fPIC -std=gnu++17 -o CMakeFiles/FirstPersonCamera.dir/src/NGLScene.cpp.o -c /home/s5221926/CFA/programming-project-IsabelJoseph101/src/NGLScene.cpp",
+  "file": "/home/s5221926/CFA/programming-project-IsabelJoseph101/src/NGLScene.cpp"
+},
+{
+  "directory": "/home/s5221926/CFA/programming-project-IsabelJoseph101/build",
+  "command": "/opt/rh/gcc-toolset-11/root/usr/bin/g++ -DADDLARGEMODELS -DFMT_HEADER_ONLY=1 -DGLM_ENABLE_EXPERIMENTAL -DOIIO_STATIC_DEFINE=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -IFirstPersonCamera_autogen/include -I../include -I/home/s5221926/NGL/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include/Imath -isystem /opt/Qt/5.15.2/gcc_64/include -isystem /opt/Qt/5.15.2/gcc_64/include/QtWidgets -isystem /opt/Qt/5.15.2/gcc_64/include/QtGui -isystem /opt/Qt/5.15.2/gcc_64/include/QtCore -isystem /opt/Qt/5.15.2/gcc_64/./mkspecs/linux-g++ -isystem /opt/Qt/5.15.2/gcc_64/include/QtOpenGL -g -pthread -fPIC -std=gnu++17 -o CMakeFiles/FirstPersonCamera.dir/src/NGLSceneMouseControls.cpp.o -c /home/s5221926/CFA/programming-project-IsabelJoseph101/src/NGLSceneMouseControls.cpp",
+  "file": "/home/s5221926/CFA/programming-project-IsabelJoseph101/src/NGLSceneMouseControls.cpp"
+},
+{
+  "directory": "/home/s5221926/CFA/programming-project-IsabelJoseph101/build",
+  "command": "/opt/rh/gcc-toolset-11/root/usr/bin/g++ -DADDLARGEMODELS -DFMT_HEADER_ONLY=1 -DGLM_ENABLE_EXPERIMENTAL -DOIIO_STATIC_DEFINE=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -IFirstPersonCamera_autogen/include -I../include -I/home/s5221926/NGL/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include/Imath -isystem /opt/Qt/5.15.2/gcc_64/include -isystem /opt/Qt/5.15.2/gcc_64/include/QtWidgets -isystem /opt/Qt/5.15.2/gcc_64/include/QtGui -isystem /opt/Qt/5.15.2/gcc_64/include/QtCore -isystem /opt/Qt/5.15.2/gcc_64/./mkspecs/linux-g++ -isystem /opt/Qt/5.15.2/gcc_64/include/QtOpenGL -g -pthread -fPIC -std=gnu++17 -o CMakeFiles/FirstPersonCamera.dir/src/FirstPersonCamera.cpp.o -c /home/s5221926/CFA/programming-project-IsabelJoseph101/src/FirstPersonCamera.cpp",
+  "file": "/home/s5221926/CFA/programming-project-IsabelJoseph101/src/FirstPersonCamera.cpp"
+},
+{
+  "directory": "/home/s5221926/CFA/programming-project-IsabelJoseph101/build",
+  "command": "/opt/rh/gcc-toolset-11/root/usr/bin/g++ -DADDLARGEMODELS -DFMT_HEADER_ONLY=1 -DGLM_ENABLE_EXPERIMENTAL -DOIIO_STATIC_DEFINE=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -IFirstPersonCamera_autogen/include -I../include -I/home/s5221926/NGL/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include -isystem /public/devel/2022/vcpkg/installed/x64-linux/include/Imath -isystem /opt/Qt/5.15.2/gcc_64/include -isystem /opt/Qt/5.15.2/gcc_64/include/QtWidgets -isystem /opt/Qt/5.15.2/gcc_64/include/QtGui -isystem /opt/Qt/5.15.2/gcc_64/include/QtCore -isystem /opt/Qt/5.15.2/gcc_64/./mkspecs/linux-g++ -isystem /opt/Qt/5.15.2/gcc_64/include/QtOpenGL -g -pthread -fPIC -std=gnu++17 -o CMakeFiles/FirstPersonCamera.dir/src/BlockSelector.cpp.o -c /home/s5221926/CFA/programming-project-IsabelJoseph101/src/BlockSelector.cpp",
+  "file": "/home/s5221926/CFA/programming-project-IsabelJoseph101/src/BlockSelector.cpp"
+}
+]

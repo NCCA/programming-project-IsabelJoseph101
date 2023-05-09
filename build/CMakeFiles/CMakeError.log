@@ -1,0 +1,37 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/s5221926/CFA/programming-project-IsabelJoseph101/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja-build cmTC_7e50c && [1/2] Building C object CMakeFiles/cmTC_7e50c.dir/src.c.o
+[2/2] Linking C executable cmTC_7e50c
+FAILED: cmTC_7e50c 
+: && /opt/rh/gcc-toolset-11/root/usr/bin/gcc   CMakeFiles/cmTC_7e50c.dir/src.c.o -o cmTC_7e50c   && :
+/opt/rh/gcc-toolset-11/root/usr/bin/ld: CMakeFiles/cmTC_7e50c.dir/src.c.o: in function `main':
+src.c:(.text+0x2d): undefined reference to `pthread_create'
+/opt/rh/gcc-toolset-11/root/usr/bin/ld: src.c:(.text+0x39): undefined reference to `pthread_detach'
+/opt/rh/gcc-toolset-11/root/usr/bin/ld: src.c:(.text+0x45): undefined reference to `pthread_cancel'
+/opt/rh/gcc-toolset-11/root/usr/bin/ld: src.c:(.text+0x56): undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
