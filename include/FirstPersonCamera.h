@@ -35,7 +35,7 @@ class FirstPersonCamera
     ngl::Real m_near=0.1f;
     ngl::Real m_far=100.0f;
     ngl::Real m_aspect=1.2f;
-
+    
 };
 
 #endif

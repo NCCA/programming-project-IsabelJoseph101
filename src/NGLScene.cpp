@@ -32,12 +32,18 @@ void NGLScene::resetBlockSelector()
                 { return BlockSelector();});
 }
 
+void NGLScene::setBlockVelocity(BlockSelector* blockshoot, ngl::Vec3 velocity)
+{
+    blockshoot[1].Velocityo = velocity;
+}
+
 void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
 {
   mySelector.moveNextPosition();
   int checkResult = 0;
 
   int blockPickedUp = 0;
+
 
   for (int j = 0; j < totalMapBlocks; j++) {
     if (mySelector.nextPosition == mapBlocko[j].position) {
@@ -160,10 +166,16 @@ void NGLScene::initializeGL()
 
   m_bbox = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mapBox.blockScale, mapBox.blockScale, mapBox.blockScale);
   m_bbox2 = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mySelector.blockScale, mySelector.blockScale, mySelector.blockScale);
-  mySelector.position = {ngl::Vec3(0.0f,0.0f,0.0f)};
+  m_bbox3 = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), blockshoot.blockScale, blockshoot.blockScale, blockshoot.blockScale);
+  mySelector.position = {ngl::Vec3(0.0f,0.0f,10.0f)};
 
   for (int u = 0; u < numMap; u++){
     mapBlock[u].position = ngl::Vec3(0.0f,-1000.0f,0.0f);
+  }
+
+
+  for (int u = 0; u < numBlockShoto; u++){
+    blockshoto[u].position = ngl::Vec3(0.0f,-1000.0f,0.0f);
   }
   
 }
@@ -205,7 +217,7 @@ void NGLScene::paintGL()
   }
 
   int nrRows = 20;
-  int nrColumns = 20;
+  int nrColumns = 40;
   float offsetSpacing = 0.5;
   float spacing = 1.0;
   ngl::Random::setSeed(1234);
@@ -250,7 +262,10 @@ void NGLScene::paintGL()
     timeCount ++;
   }
 
-  std::cout<<"time count = "<<timeCount<<"\n";
+  keyPressTimer = timeCount % 4;
+
+  std::cout<<"time count = "<<timeCount<<" keyPauseSeprate = "<<keyPressTimer<< "\n";
+  
 
   
   int countNumBlock = 1;
@@ -264,56 +279,56 @@ void NGLScene::paintGL()
     }
    }
 
-  for (int col = 0; col < nrColumns + 2; ++col)
-    {
-        mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, 0, -nrRows/2-1));
-        countNumBlock++;
-    }
+  // for (int col = 0; col < nrColumns + 2; ++col)
+  //   {
+  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, 0, -nrRows/2-1));
+  //       countNumBlock++;
+  //   }
 
-  for (int col = 0; col < nrColumns + 2; ++col)
-    {
-        mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, 0, nrRows/2));
-        countNumBlock++;
-    }
+  // for (int col = 0; col < nrColumns + 2; ++col)
+  //   {
+  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, 0, nrRows/2));
+  //       countNumBlock++;
+  //   }
 
-    for (int row = 0; row < nrColumns; ++row)
-    {
-        mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(nrColumns/2, 0, static_cast<float>((row - (nrRows / 2) * spacing))));
-        countNumBlock++;
-    }
+  //   for (int row = 0; row < nrColumns; ++row)
+  //   {
+  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(nrColumns/2, 0, static_cast<float>((row - (nrRows / 2) * spacing))));
+  //       countNumBlock++;
+  //   }
 
-    for (int row = 0; row < nrColumns; ++row)
-    {
-        mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3((-nrColumns/2)-1, 0, static_cast<float>((row - (nrRows / 2) * spacing))));
-        countNumBlock++;
-    }
+  //   for (int row = 0; row < nrColumns; ++row)
+  //   {
+  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3((-nrColumns/2)-1, 0, static_cast<float>((row - (nrRows / 2) * spacing))));
+  //       countNumBlock++;
+  //   }
 
-  countNumBlock = 1;
+  // countNumBlock = 1;
 
 
-  for (int col = 0; col < nrColumns + 2; ++col)
-    {
-        mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, -1, -nrRows/2-1));
-        countNumBlock++;
-    }
+  // for (int col = 0; col < nrColumns + 2; ++col)
+  //   {
+  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, -1, -nrRows/2-1));
+  //       countNumBlock++;
+  //   }
 
-  for (int col = 0; col < nrColumns + 2; ++col)
-    {
-        mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, -1, nrRows/2));
-        countNumBlock++;
-    }
+  // for (int col = 0; col < nrColumns + 2; ++col)
+  //   {
+  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, -1, nrRows/2));
+  //       countNumBlock++;
+  //   }
 
-    for (int row = 0; row < nrColumns; ++row)
-    {
-        mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(nrColumns/2,-1, static_cast<float>((row - (nrRows / 2) * spacing))));
-        countNumBlock++;
-    }
+  //   for (int row = 0; row < nrColumns; ++row)
+  //   {
+  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(nrColumns/2,-1, static_cast<float>((row - (nrRows / 2) * spacing))));
+  //       countNumBlock++;
+  //   }
 
-    for (int row = 0; row < nrColumns; ++row)
-    {
-        mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3((-nrColumns/2)-1, -1, static_cast<float>((row - (nrRows / 2) * spacing))));
-        countNumBlock++;
-    }
+  //   for (int row = 0; row < nrColumns; ++row)
+  //   {
+  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3((-nrColumns/2)-1, -1, static_cast<float>((row - (nrRows / 2) * spacing))));
+  //       countNumBlock++;
+  //   }
     // mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(1,0,1));
     // countNumBlock++;
     // mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(1,0,0));
@@ -343,6 +358,7 @@ void NGLScene::paintGL()
     mapBlock[countNumBlock].isPickup = 1;
     countNumBlock++;
 
+    
     mapBlock[countNumBlock].blockScale = pickUpScale;
     mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-9,0,0));
     mapBlock[countNumBlock].isPickup = 1;
@@ -353,13 +369,14 @@ void NGLScene::paintGL()
     mapBlock[countNumBlock].isPickup = 1;
     countNumBlock++;
 
-
     // start of enemy blocks
     // offset in x direction
     int enemyXOffset = 2;
+    // offset in y direction
+    int enemyYOffset = 0;
     // speed that enemy blocks move in
     float enemySpeed = 0.01f;
-    
+
     // moves enemies based on time count
     if (timeCount == 20) 
     {
@@ -368,16 +385,43 @@ void NGLScene::paintGL()
     // combining two if statements using the ternary operator ?
     xEnemyLoc += (timeCount >= 0 && timeCount < 50) ? enemySpeed : -enemySpeed;
 
-  
     // changes the number of enemies on screen
     int numOfEnemies = 8;
-    for (int i = 0; i < numOfEnemies; i++)
+    for (int j = 0; j < 2; j++) // add another loop for the second row
     {
-      mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset,0,zEnemyLoc));
-      countNumBlock++;
-      enemyXOffset += 2;
+      for (int i = 0; i < numOfEnemies; i++)
+      {
+        mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset, 0,zEnemyLoc + enemyYOffset));
+        countNumBlock++;
+        enemyXOffset += 2;
+      }
+      // reset x offset for the next row
+      enemyXOffset = 2;
+      // offset y for the next row
+      enemyYOffset += 2;
     }
 
+
+    for (int o = 0; o < numBlockShoto; o++) {
+
+      if (blockshoto[o].hasBeenFired == 1)
+        blockshoto[o].position.m_z = blockshoto[o].position.m_z - 0.2f;
+
+      else {
+
+        blockshoto[o].position.m_z = 10.0f;
+        blockshoto[o].position.m_y = -100.0f;
+        // blockshoto[o].hasBeenFired = 0;
+
+      }
+      mapBlockFunc(blockshoto, o, red, white, ngl::Vec3(blockshoto[o].xStartPosition,0,blockshoto[o].position.m_z ));
+    }
+       
+
+    // blockshoto[blockNumToShoot].position.m_z = blockshoto[1].position.m_z - 0.2f;
+    // blockshoto.xStartPosition = 1.0f;
+    // }
+    
 
     // if (timeCount == 50) {
     //   zEnemyLoc = zEnemyLoc + 1;
@@ -427,70 +471,70 @@ void NGLScene::paintGL()
 
 
 
-    mapBlock[countNumBlock].blockScale = pickUpScale;
-    mapBlock[countNumBlock].isPickup = 1;
-    if (FrameRim <= 9) 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-FrameRim,0,2));
-    }
-    else 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-9,0,2));
-    }
-    countNumBlock++;
+    // mapBlock[countNumBlock].blockScale = pickUpScale;
+    // mapBlock[countNumBlock].isPickup = 1;
+    // if (FrameRim <= 9) 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-FrameRim,0,2));
+    // }
+    // else 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-9,0,2));
+    // }
+    // countNumBlock++;
 
 
 
-    if (FrameRim == 1 || FrameRim == 2) 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(-1,1,0));
-    }
-    else 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(-1,0,0));
-    }
-    countNumBlock++;
+    // if (FrameRim == 1 || FrameRim == 2) 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(-1,1,0));
+    // }
+    // else 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(-1,0,0));
+    // }
+    // countNumBlock++;
 
-    if (FrameRim <= 9) 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim));
-    }
-    else 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9));
-    }
-    countNumBlock++;
+    // if (FrameRim <= 9) 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim));
+    // }
+    // else 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9));
+    // }
+    // countNumBlock++;
 
-    if (FrameRim <= 9) 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-1));
-    }
-    else 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-1));
-    }
-    countNumBlock++;
+    // if (FrameRim <= 9) 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-1));
+    // }
+    // else 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-1));
+    // }
+    // countNumBlock++;
 
-    if (FrameRim <= 9) 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-2));
-    }
-    else 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-2));
-    }
-    countNumBlock++;
+    // if (FrameRim <= 9) 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-2));
+    // }
+    // else 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-2));
+    // }
+    // countNumBlock++;
 
 
-    if (FrameRim <= 9) 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-3));
-    }
-    else 
-    {
-      mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-3));
-    }
-    countNumBlock++;
+    // if (FrameRim <= 9) 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-3));
+    // }
+    // else 
+    // {
+    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-3));
+    // }
+    // countNumBlock++;
 
   int CollsionTestTrue;
 
@@ -498,6 +542,29 @@ void NGLScene::paintGL()
     {
       switch (key)
       {
+      case Qt::Key_Space: 
+      {
+        
+        
+        if (keyPressTimer == 0) {
+
+        blockshoto[blockNumToShoot].xStartPosition = mySelector.position.m_x;
+        blockshoto[blockNumToShoot].position.m_z = 10;
+
+        blockshoto[blockNumToShoot].hasBeenFired = 1;
+
+        if (blockNumToShoot < 9) {
+          blockNumToShoot++;
+        } else {
+          blockNumToShoot = 1;
+        }
+
+        }
+
+
+
+        break;
+      }
       case Qt::Key_A:
       {
         yDirection = -5.0f;
@@ -544,14 +611,14 @@ void NGLScene::paintGL()
         CollisionTest(mapBlock, numMap);
         break;
       }
-      case Qt::Key_Space:
-      {
-        mySelector.displacement = {ngl::Vec3(0.0f,mySelector.displacementAmount,0.0f)};
-        keyPressed = 1;
-        mySelector.moveNextPosition();
-        CollisionTest(mapBlock, numMap);
-        break;
-      }
+      // case Qt::Key_Space:
+      // {
+      //   mySelector.displacement = {ngl::Vec3(0.0f,mySelector.displacementAmount,0.0f)};
+      //   keyPressed = 1;
+      //   mySelector.moveNextPosition();
+      //   CollisionTest(mapBlock, numMap);
+      //   break;
+      // }
       case Qt::Key_Control:
       {
         mySelector.displacement = {ngl::Vec3(0.0f,-mySelector.displacementAmount,0.0f)};
@@ -560,22 +627,22 @@ void NGLScene::paintGL()
         CollisionTest(mapBlock, numMap);
         break;
       }
-      case Qt::Key_Down:
-      {
-        mySelector.displacement = {ngl::Vec3(0.0f,0.0f,mySelector.displacementAmount)};
-        keyPressed = 1;
-        mySelector.moveNextPosition();
-        CollisionTest(mapBlock, numMap);
-        break;
-      }
-      case Qt::Key_Up:
-      {
-        mySelector.displacement = {ngl::Vec3(0.0f,0.0f,-mySelector.displacementAmount)};
-        keyPressed = 1;
-        mySelector.moveNextPosition();
-        CollisionTest(mapBlock, numMap);
-        break;
-      }
+      // case Qt::Key_Down:
+      // {
+      //   mySelector.displacement = {ngl::Vec3(0.0f,0.0f,mySelector.displacementAmount)};
+      //   keyPressed = 1;
+      //   mySelector.moveNextPosition();
+      //   CollisionTest(mapBlock, numMap);
+      //   break;
+      // }
+      // case Qt::Key_Up:
+      // {
+      //   mySelector.displacement = {ngl::Vec3(0.0f,0.0f,-mySelector.displacementAmount)};
+      //   keyPressed = 1;
+      //   mySelector.moveNextPosition();
+      //   CollisionTest(mapBlock, numMap);
+      //   break;
+      // }
       case Qt::Key_1:
       {
         modeToDraw = 1;
@@ -629,8 +696,11 @@ void NGLScene::paintGL()
       default:
       break;
       }
+
       update();
     }
+
+  
       if (m_keysPressed.size() != 0)
     {
       m_cam.move(xDirection, yDirection, zDirection, m_deltaTime);

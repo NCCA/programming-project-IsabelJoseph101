@@ -2,3 +2,7 @@
 
 ## Overview
 A 3D space invaders game that involves interaction and collision with other objects.
+
+## File organization
+
+## Keys

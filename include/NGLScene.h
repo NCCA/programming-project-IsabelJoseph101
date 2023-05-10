@@ -76,6 +76,7 @@ private:
   /// @brief Our Camera
   //----------------------------------------------------------------------------------------------------------------------
   FirstPersonCamera m_cam;
+  
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief the model position for mouse movement
   //----------------------------------------------------------------------------------------------------------------------
@@ -104,6 +105,7 @@ private:
   std::vector <BlockSelector> m_BlockSelectorArray;
   std::unique_ptr<ngl::BBox> m_bbox;
   std::unique_ptr<ngl::BBox> m_bbox2;
+   std::unique_ptr<ngl::BBox> m_bbox3;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief flag to indicate if we need to do spheresphere checks
     //----------------------------------------------------------------------------------------------------------------------
@@ -115,7 +117,7 @@ private:
 
   BlockSelector mySelector;
   BlockSelector mapBox;
-  
+  BlockSelector blockshoot;
 
 
   
@@ -161,21 +163,26 @@ private:
   void resetBlockSelector();
   void checkBlockSelectorCollisions();
   void CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks);
-  
+  void setBlockVelocity(BlockSelector* blockshoot, ngl::Vec3 velocity);
 
+  
+  
   float pickUpScale = 0.6f;
   int numMap = 2000;
+  int numBlockShoto = 10;
   int modeToDraw = 2;
   float globalBlockScale = 0.9f;
   BlockSelector mapBlock[2000];
+  BlockSelector blockshoto[10];
   int timeCount = 0;
   int timeIncrease = 0;
   float xEnemyLoc = -9;
   float zEnemyLoc = -6;
   int score = 0;
- 
-
-
+  float StartBulletZ = 0;
+  int blockNumToShoot = 1;
+  int keyPressTimer = 0;
+  int keyPauseSeprate = 0;
 };
 
 
