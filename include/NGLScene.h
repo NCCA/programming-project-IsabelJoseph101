@@ -103,9 +103,9 @@ private:
   /// @brief the keys being pressed
   //----------------------------------------------------------------------------------------------------------------------
   std::vector <BlockSelector> m_BlockSelectorArray;
-  std::unique_ptr<ngl::BBox> m_bbox;
-  std::unique_ptr<ngl::BBox> m_bbox2;
-   std::unique_ptr<ngl::BBox> m_bbox3;
+  std::unique_ptr<ngl::BBox> m_grid;
+  std::unique_ptr<ngl::BBox> m_box;
+  std::unique_ptr<ngl::BBox> m_bullet;
     //----------------------------------------------------------------------------------------------------------------------
     /// @brief flag to indicate if we need to do spheresphere checks
     //----------------------------------------------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ private:
   void resetBlockSelector();
   void checkBlockSelectorCollisions();
   void CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks);
-  void setBlockVelocity(BlockSelector* blockshoot, ngl::Vec3 velocity);
+
 
   
   

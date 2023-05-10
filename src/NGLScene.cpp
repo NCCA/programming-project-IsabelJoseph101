@@ -28,15 +28,10 @@ NGLScene::NGLScene(int _numBlockSelector)
 void NGLScene::resetBlockSelector()
 {
   m_BlockSelectorArray.resize(m_numBlockSelector);
-  std::generate(std::begin(m_BlockSelectorArray), std::end(m_BlockSelectorArray), [this]()
-                { return BlockSelector();});
+  std::generate(std::begin(m_BlockSelectorArray), std::end(m_BlockSelectorArray), [this](){return BlockSelector();});
 }
 
-void NGLScene::setBlockVelocity(BlockSelector* blockshoot, ngl::Vec3 velocity)
-{
-    blockshoot[1].Velocityo = velocity;
-}
-
+// tests if blocks collide
 void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
 {
   mySelector.moveNextPosition();
@@ -46,7 +41,8 @@ void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
 
 
   for (int j = 0; j < totalMapBlocks; j++) {
-    if (mySelector.nextPosition == mapBlocko[j].position) {
+    if (mySelector.nextPosition == mapBlocko[j].position) 
+    {
       checkResult = 1;
       std::cout<<"Collision detected at: ("<<mapBlocko[j].position.m_x<<", "<<mapBlocko[j].position.m_y<<", "<<mapBlocko[j].position.m_z<<")"<<"\n"; 
       blockPickedUp = j;
@@ -58,47 +54,45 @@ void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
     }
   }
 
-  if (checkResult == 1) {
+  if (checkResult == 1) 
+  {
       if (mapBlocko[blockPickedUp].isPickup == 1) {
         mapBlocko[blockPickedUp].hasBeenPickedUp = 1;
         std::cout<<"Picked up block"<<"\n";
         mySelector.move();
-        m_bbox2->setCenter(mySelector.position);
-  
+        m_box->setCenter(mySelector.position);
       }
-    // std::cout<<"collisions detected -----------------------------------------------------------------------------------------------------------------------"<<"\n";
-    // mySelector.move();
+    // std::cout<<"collisions detected
   }
-  else {
+  else 
+  {
     // std::cout<<"collisions not detected"<<"\n";
-    // mySelector.move();
-
-  
     mySelector.move();
-    m_bbox2->setCenter(mySelector.position);
+    m_box->setCenter(mySelector.position);
   }
 }
 
+// draws the base grid of blocks
 void NGLScene::mapBlockDraw(ngl::Vec4 fillColour,ngl::Vec4 outlineColour, float cubeSize)
 {
-        m_bbox->width(cubeSize);
-        m_bbox->depth(cubeSize);
-        m_bbox->height(cubeSize);
+        m_grid->width(cubeSize);
+        m_grid->depth(cubeSize);
+        m_grid->height(cubeSize);
         if (modeToDraw == 2){
-          m_bbox->setDrawMode(GL_FILL);
+          m_grid->setDrawMode(GL_FILL);
           loadMatricesToShader(fillColour);
-          m_bbox->draw();
+          m_grid->draw();
         } else if (modeToDraw == 3){
-          m_bbox->setDrawMode(GL_LINE);
+          m_grid->setDrawMode(GL_LINE);
           loadMatricesToShader(outlineColour);
-          m_bbox->draw();
+          m_grid->draw();
         } else {
-          m_bbox->setDrawMode(GL_FILL);
+          m_grid->setDrawMode(GL_FILL);
           loadMatricesToShader(fillColour);
-          m_bbox->draw();
-          m_bbox->setDrawMode(GL_LINE);
+          m_grid->draw();
+          m_grid->setDrawMode(GL_LINE);
           loadMatricesToShader(outlineColour);
-          m_bbox->draw();
+          m_grid->draw();
         }
 }
 
@@ -107,12 +101,12 @@ void NGLScene::mapBlockDraw(ngl::Vec4 fillColour,ngl::Vec4 outlineColour, float 
 
     if (mapBlockot[countNumBlock].hasBeenPickedUp == 0) {
       mapBlockot[countNumBlock].position  = ngl::Vec3(blockPosition);
-      m_bbox->setCenter(mapBlockot[countNumBlock].position);
+      m_grid->setCenter(mapBlockot[countNumBlock].position);
       mapBlockDraw(fillColour, outlineColour, mapBlockot[countNumBlock].blockScale);
     } 
     else {
       mapBlockot[countNumBlock].position  = ngl::Vec3(0,-1000,0);
-      m_bbox->setCenter(mapBlockot[countNumBlock].position);
+      m_grid->setCenter(mapBlockot[countNumBlock].position);
       // mapBlockDraw(fillColour, outlineColour, mapBlockot[countNumBlock].blockScale);
     } 
   }
@@ -146,13 +140,12 @@ void NGLScene::initializeGL()
 
 #endif
 
-  // Now we will create a basic Camera from the graphics library
-  // This is a static camera so it only needs to be set once
-  // First create Values for the camera position
+  // static camera
+  // camera poistion
   ngl::Vec3 from(0, 5, 20);
   ngl::Vec3 to(0, 0, 0);
   ngl::Vec3 up(0, 1, 0);
-  // now load to our new camera
+  // loads new camers
   m_cam.set(from, to, up);
   // set the shape using FOV 90 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
@@ -160,19 +153,23 @@ void NGLScene::initializeGL()
 
   ngl::ShaderLib::use(ngl::nglColourShader);
   ngl::ShaderLib::setUniform("Colour", 1.0f, 1.0f, 1.0f, 1.0f);
-  // ngl::VAOPrimitives::createTrianglePlane("floor", 650, 650, 1, 1, ngl::Vec3::up());
   ngl::VAOPrimitives::createLineGrid("plane", 24, 24, 24);
-  // ngl::VAOPrimitives::createLineGrid("planeWall", 20, 20, 20);
 
-  m_bbox = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mapBox.blockScale, mapBox.blockScale, mapBox.blockScale);
-  m_bbox2 = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mySelector.blockScale, mySelector.blockScale, mySelector.blockScale);
-  m_bbox3 = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), blockshoot.blockScale, blockshoot.blockScale, blockshoot.blockScale);
+
+  // boxes for the grid
+  m_grid = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mapBox.blockScale, mapBox.blockScale, mapBox.blockScale);
+
+  // player character
+  m_box = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mySelector.blockScale, mySelector.blockScale, mySelector.blockScale);
+
+  // bullet
+  m_bullet = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), blockshoot.blockScale, blockshoot.blockScale, blockshoot.blockScale);
   mySelector.position = {ngl::Vec3(0.0f,0.0f,10.0f)};
+
 
   for (int u = 0; u < numMap; u++){
     mapBlock[u].position = ngl::Vec3(0.0f,-1000.0f,0.0f);
   }
-
 
   for (int u = 0; u < numBlockShoto; u++){
     blockshoto[u].position = ngl::Vec3(0.0f,-1000.0f,0.0f);
@@ -279,95 +276,21 @@ void NGLScene::paintGL()
     }
    }
 
-  // for (int col = 0; col < nrColumns + 2; ++col)
-  //   {
-  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, 0, -nrRows/2-1));
-  //       countNumBlock++;
-  //   }
-
-  // for (int col = 0; col < nrColumns + 2; ++col)
-  //   {
-  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, 0, nrRows/2));
-  //       countNumBlock++;
-  //   }
-
-  //   for (int row = 0; row < nrColumns; ++row)
-  //   {
-  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(nrColumns/2, 0, static_cast<float>((row - (nrRows / 2) * spacing))));
-  //       countNumBlock++;
-  //   }
-
-  //   for (int row = 0; row < nrColumns; ++row)
-  //   {
-  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3((-nrColumns/2)-1, 0, static_cast<float>((row - (nrRows / 2) * spacing))));
-  //       countNumBlock++;
-  //   }
-
-  // countNumBlock = 1;
-
-
-  // for (int col = 0; col < nrColumns + 2; ++col)
-  //   {
-  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, -1, -nrRows/2-1));
-  //       countNumBlock++;
-  //   }
-
-  // for (int col = 0; col < nrColumns + 2; ++col)
-  //   {
-  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing -1, -1, nrRows/2));
-  //       countNumBlock++;
-  //   }
-
-  //   for (int row = 0; row < nrColumns; ++row)
-  //   {
-  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3(nrColumns/2,-1, static_cast<float>((row - (nrRows / 2) * spacing))));
-  //       countNumBlock++;
-  //   }
-
-  //   for (int row = 0; row < nrColumns; ++row)
-  //   {
-  //       mapBlockFunc(mapBlock, countNumBlock, grassGreen, white, ngl::Vec3((-nrColumns/2)-1, -1, static_cast<float>((row - (nrRows / 2) * spacing))));
-  //       countNumBlock++;
-  //   }
-    // mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(1,0,1));
+    // mapBlock[countNumBlock].blockScale = pickUpScale;
+    // mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(3,0,4));
+    // mapBlock[countNumBlock].isPickup = 1;
     // countNumBlock++;
-    // mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(1,0,0));
-    // countNumBlock++;
-    // mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(0,0,-1));
-    // countNumBlock++;
-    // mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(1,0,-1));
-    // countNumBlock++;
-    // mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(0,0,1));
-    // countNumBlock++;
-    //  mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(-1,0,1));
-    // countNumBlock++;
-    //  mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(-1,0,-1));
-    // countNumBlock++;
-
-    // if (frameDecimal >= 50 && frameDecimal < 75) 
-    // {
-    //   pickUpScale = pickUpScale + 0.02;
-    // }
-    // else if (frameDecimal >= 75 && frameDecimal < 100)
-    // {
-    //  pickUpScale = pickUpScale - 0.02;
-    // }
-
-    mapBlock[countNumBlock].blockScale = pickUpScale;
-    mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(3,0,4));
-    mapBlock[countNumBlock].isPickup = 1;
-    countNumBlock++;
 
     
-    mapBlock[countNumBlock].blockScale = pickUpScale;
-    mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-9,0,0));
-    mapBlock[countNumBlock].isPickup = 1;
-    countNumBlock++;
+    // mapBlock[countNumBlock].blockScale = pickUpScale;
+    // mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-9,0,0));
+    // mapBlock[countNumBlock].isPickup = 1;
+    // countNumBlock++;
 
-    mapBlock[countNumBlock].blockScale = pickUpScale;
-    mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-7,0,-7));
-    mapBlock[countNumBlock].isPickup = 1;
-    countNumBlock++;
+    // mapBlock[countNumBlock].blockScale = pickUpScale;
+    // mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-7,0,-7));
+    // mapBlock[countNumBlock].isPickup = 1;
+    // countNumBlock++;
 
     // start of enemy blocks
     // offset in x direction
@@ -398,365 +321,235 @@ void NGLScene::paintGL()
       // reset x offset for the next row
       enemyXOffset = 2;
       // offset y for the next row
-      enemyYOffset += 2;
     }
 
 
-    for (int o = 0; o < numBlockShoto; o++) {
-
-      if (blockshoto[o].hasBeenFired == 1)
-        blockshoto[o].position.m_z = blockshoto[o].position.m_z - 0.2f;
-
-      else {
-
+  for (int o = 0; o < numBlockShoto; o++) 
+  {
+    // checks if block if fired
+    if (blockshoto[o].hasBeenFired == 1) 
+    {
+      // updates position of blockshoto if fired
+      blockshoto[o].position.m_z = blockshoto[o].position.m_z - 0.2f;
+      mapBlockFunc(blockshoto, o, red, white, ngl::Vec3(blockshoto[o].xStartPosition, 0, blockshoto[o].position.m_z));
+      
+      // check if blockshoto has reached a certain position and delete it if it has
+      if (blockshoto[o].position.m_z < -10.0f) 
+      {
         blockshoto[o].position.m_z = 10.0f;
         blockshoto[o].position.m_y = -100.0f;
-        // blockshoto[o].hasBeenFired = 0;
-
+        blockshoto[o].hasBeenFired = 0;
       }
-      mapBlockFunc(blockshoto, o, red, white, ngl::Vec3(blockshoto[o].xStartPosition,0,blockshoto[o].position.m_z ));
     }
-       
-
-    // blockshoto[blockNumToShoot].position.m_z = blockshoto[1].position.m_z - 0.2f;
-    // blockshoto.xStartPosition = 1.0f;
-    // }
-    
-
-    // if (timeCount == 50) {
-    //   zEnemyLoc = zEnemyLoc + 1;
-    // }
-
-    // if (timeCount >= 0 && timeCount < 50) 
-    // {
-    //   xEnemyLoc = xEnemyLoc + enemySpeed;
-    //   mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset,0,zEnemyLoc));
-    // }
-    // else if ((timeCount >= 50 && timeCount <= 100) )
-    // {
-    //   xEnemyLoc = xEnemyLoc - enemySpeed;
-    //   mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset,0,zEnemyLoc));
-    // }
-    // countNumBlock++;
-
-    // enemyXOffset = enemyXOffset + 2;
-       
-    // if (timeCount >= 0 && timeCount < 50) 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset,0,zEnemyLoc));
-    // }
-    // else if ((timeCount >= 50 && timeCount <= 100) )
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset,0,zEnemyLoc));
-    // }
-    // countNumBlock++;
-
-    //  enemyXOffset = enemyXOffset + 2;
-
-    // if (timeCount >= 0 && timeCount < 50) 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset,0,zEnemyLoc));
-    // }
-    // else if ((timeCount >= 50 && timeCount <= 100) )
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset,0,zEnemyLoc));
-    // }
-    // countNumBlock++;
-
-    // enemyXOffset = enemyXOffset + 2;
-
-    
-
-    //end of enemy blocks
+    // else if the blockshoto has not been fired, set it to a position off screen
+    else 
+    {
+      blockshoto[o].position.m_z = 10.0f;
+      blockshoto[o].position.m_y = -100.0f;
+    }
+  }
 
 
 
-    // mapBlock[countNumBlock].blockScale = pickUpScale;
-    // mapBlock[countNumBlock].isPickup = 1;
-    // if (FrameRim <= 9) 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-FrameRim,0,2));
-    // }
-    // else 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-9,0,2));
-    // }
-    // countNumBlock++;
-
-
-
-    // if (FrameRim == 1 || FrameRim == 2) 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(-1,1,0));
-    // }
-    // else 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, lilac, white, ngl::Vec3(-1,0,0));
-    // }
-    // countNumBlock++;
-
-    // if (FrameRim <= 9) 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim));
-    // }
-    // else 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9));
-    // }
-    // countNumBlock++;
-
-    // if (FrameRim <= 9) 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-1));
-    // }
-    // else 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-1));
-    // }
-    // countNumBlock++;
-
-    // if (FrameRim <= 9) 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-2));
-    // }
-    // else 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-2));
-    // }
-    // countNumBlock++;
-
-
-    // if (FrameRim <= 9) 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,FrameRim-3));
-    // }
-    // else 
-    // {
-    //   mapBlockFunc(mapBlock, countNumBlock, pink, white, ngl::Vec3(2,0,9-3));
-    // }
-    // countNumBlock++;
+  for (int i = 0; i < 3; i++) 
+  {
+    ngl::Vec3 position = ngl::Vec3(i * 2 - 2, 0, 2); // calculate the position of the block
+    mapBlockFunc(mapBlock, countNumBlock + i, orange, black, position); // place the block
+  }
+  
 
   int CollsionTestTrue;
 
-     foreach (Qt::Key key, m_keysPressed)
+  // setting key controls
+  foreach (Qt::Key key, m_keysPressed)
+  {
+    switch (key)
     {
-      switch (key)
+    // moves player's character right
+    case Qt::Key_Right:
+    {
+      mySelector.displacement = {ngl::Vec3(mySelector.displacementAmount,0.0f,0.0f)};
+      keyPressed = 1;
+      mySelector.moveNextPosition();
+      CollisionTest(mapBlock, numMap);
+      break;
+    }
+    // moves player's character left
+    case Qt::Key_Left:
+    {
+      mySelector.displacement = {ngl::Vec3(-mySelector.displacementAmount,0.0f,0.0f)};
+      keyPressed = 1;
+      mySelector.moveNextPosition();
+      CollisionTest(mapBlock, numMap);
+      break;
+    }
+    // shoots blocks with spacebar
+    case Qt::Key_Space: 
+    {
+      if (keyPressTimer == 0) 
       {
-      case Qt::Key_Space: 
-      {
-        
-        
-        if (keyPressTimer == 0) {
-
         blockshoto[blockNumToShoot].xStartPosition = mySelector.position.m_x;
         blockshoto[blockNumToShoot].position.m_z = 10;
-
         blockshoto[blockNumToShoot].hasBeenFired = 1;
 
-        if (blockNumToShoot < 9) {
-          blockNumToShoot++;
-        } else {
-          blockNumToShoot = 1;
-        }
-
-        }
-
-
-
-        break;
-      }
-      case Qt::Key_A:
-      {
-        yDirection = -5.0f;
-        break;
-      }
-      case Qt::Key_D:
-      { 
-        yDirection = 5.0f;
-        break;
-      }
-      case Qt::Key_W:
-      {
-        xDirection = 5.0f;
-        break;
-      }
-      case Qt::Key_S:
-      {
-        xDirection = -5.0f;
-        break;
-      }
-       case Qt::Key_Shift:
-      {
-        zDirection = -5.0f;
-        break;
-      }
-       case Qt::Key_CapsLock:
-      {
-        zDirection = +5.0f;
-        break;
-      }
-      case Qt::Key_Right:
-      {
-        mySelector.displacement = {ngl::Vec3(mySelector.displacementAmount,0.0f,0.0f)};
-        keyPressed = 1;
-        mySelector.moveNextPosition();
-        CollisionTest(mapBlock, numMap);
-        break;
-      }
-      case Qt::Key_Left:
-      {
-        mySelector.displacement = {ngl::Vec3(-mySelector.displacementAmount,0.0f,0.0f)};
-        keyPressed = 1;
-        mySelector.moveNextPosition();
-        CollisionTest(mapBlock, numMap);
-        break;
-      }
-      // case Qt::Key_Space:
-      // {
-      //   mySelector.displacement = {ngl::Vec3(0.0f,mySelector.displacementAmount,0.0f)};
-      //   keyPressed = 1;
-      //   mySelector.moveNextPosition();
-      //   CollisionTest(mapBlock, numMap);
-      //   break;
-      // }
-      case Qt::Key_Control:
-      {
-        mySelector.displacement = {ngl::Vec3(0.0f,-mySelector.displacementAmount,0.0f)};
-        keyPressed = 1;
-        mySelector.moveNextPosition();
-        CollisionTest(mapBlock, numMap);
-        break;
-      }
-      // case Qt::Key_Down:
-      // {
-      //   mySelector.displacement = {ngl::Vec3(0.0f,0.0f,mySelector.displacementAmount)};
-      //   keyPressed = 1;
-      //   mySelector.moveNextPosition();
-      //   CollisionTest(mapBlock, numMap);
-      //   break;
-      // }
-      // case Qt::Key_Up:
-      // {
-      //   mySelector.displacement = {ngl::Vec3(0.0f,0.0f,-mySelector.displacementAmount)};
-      //   keyPressed = 1;
-      //   mySelector.moveNextPosition();
-      //   CollisionTest(mapBlock, numMap);
-      //   break;
-      // }
-      case Qt::Key_1:
-      {
-        modeToDraw = 1;
-        break;
-      }
-       case Qt::Key_2:
-      {
-        modeToDraw = 2;
-        break;
-      }
-       case Qt::Key_3:
-      {
-        modeToDraw = 3;
-        break;
-      }
-      case Qt::Key_4:
-      {
-        if (mapBlock[1].blockScale >= 0) 
-        {
-          for (int u = 0; u < numMap; u++)
+        if (blockNumToShoot < 9) 
           {
-            mapBlock[u].blockScale = mapBlock[u].blockScale - 0.01f;
+            blockNumToShoot++;
+          } 
+          else 
+          {
+            blockNumToShoot = 1;
           }
-        }
-        break;
       }
-      case Qt::Key_5:
-      {
-        for (int u = 0; u < numMap; u++)
-        {
-          mapBlock[u].blockScale = mapBlock[u].blockScale + 0.01f;
-        }
-        break;
-      }
-      case Qt::Key_6:
-      {
-        for (int u = 0; u < numMap; u++)
-        {
-          mapBlock[u].blockScale = 0.9f;
-        }
-        break;
-      }
-       case Qt::Key_7:
-      {
-        for (int u = 0; u < numMap; u++)
-        {
-          mapBlock[u].blockScale = 1.0f;
-        }
-        break;
-      }
-      default:
       break;
+    }
+
+    // camera movements
+    case Qt::Key_A:
+    {
+      yDirection = -5.0f;
+      break;
+    }
+    case Qt::Key_D:
+    { 
+      yDirection = 5.0f;
+      break;
+    }
+    case Qt::Key_W:
+    {
+      xDirection = 5.0f;
+      break;
+    }
+    case Qt::Key_S:
+    {
+      xDirection = -5.0f;
+      break;
+    }
+    case Qt::Key_Shift:
+    {
+      zDirection = -5.0f;
+      break;
+    }
+    case Qt::Key_CapsLock:
+    {
+      zDirection = +5.0f;
+      break;
+    }
+
+    // wireframe modes 1 = points, 2 = lines, 3 = fill
+    case Qt::Key_1:
+    {
+      modeToDraw = 1;
+      break;
+    }
+    case Qt::Key_2:
+    {
+      modeToDraw = 2;
+      break;
+    }
+    case Qt::Key_3:
+    {
+      modeToDraw = 3;
+      break;
+    }
+
+    // block scale controls
+    case Qt::Key_4:
+    {
+      if (mapBlock[1].blockScale >= 0) 
+      {
+        for (int u = 0; u < numMap; u++)
+        {
+          mapBlock[u].blockScale = mapBlock[u].blockScale - 0.01f;
+        }
       }
-
-      update();
+      break;
     }
-
-  
-      if (m_keysPressed.size() != 0)
+    case Qt::Key_5:
     {
-      m_cam.move(xDirection, yDirection, zDirection, m_deltaTime);
+      for (int u = 0; u < numMap; u++)
+      {
+        mapBlock[u].blockScale = mapBlock[u].blockScale + 0.01f;
+      }
+      break;
     }
-
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  m_transform.reset();
-  if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12)) 
+    case Qt::Key_6:
+    {
+      for (int u = 0; u < numMap; u++)
+      {
+        mapBlock[u].blockScale = 0.9f;
+      }
+      break;
+    }
+    case Qt::Key_7:
+    {
+      for (int u = 0; u < numMap; u++)
+      {
+        mapBlock[u].blockScale = 1.0f;
+      }
+      break;
+    }
+    default:
+    break;
+    }
+    update();
+  }
+    if (m_keysPressed.size() != 0)
   {
-    if (modeToDraw == 2)
-    {
-      m_bbox2->setDrawMode(GL_FILL);
-      loadMatricesToShader(yellow);
-      m_bbox2->draw();
-    } 
-    else if (modeToDraw == 3)
-    {
-      m_bbox2->setDrawMode(GL_LINE);
-      loadMatricesToShader(black);
-      m_bbox2->draw();
-    } 
-    else 
-    {
-      m_bbox2->setDrawMode(GL_FILL);
-      loadMatricesToShader(yellow);
-      m_bbox2->draw();
-      m_bbox2->setDrawMode(GL_LINE);
-      loadMatricesToShader(black);
-      m_bbox2->draw();
-    }
-    }
-    else 
-    {
-    if (modeToDraw == 2)
-    {
-      m_bbox2->setDrawMode(GL_FILL);
-      loadMatricesToShader(lightRed);
-      m_bbox2->draw();
-    } 
-    else if (modeToDraw == 3)
-    {
-      m_bbox2->setDrawMode(GL_LINE);
-      loadMatricesToShader(white);
-      m_bbox2->draw();
-    } 
-    else 
-    {
-      m_bbox2->setDrawMode(GL_FILL);
-      loadMatricesToShader(lightRed);
-      m_bbox2->draw();
-      m_bbox2->setDrawMode(GL_LINE);
-      loadMatricesToShader(white);
-      m_bbox2->draw();
-    }
-    }
-  
+    m_cam.move(xDirection, yDirection, zDirection, m_deltaTime);
+  }
+
+glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+m_transform.reset();
+if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12)) 
+{
+  if (modeToDraw == 2)
+  {
+    m_box->setDrawMode(GL_FILL);
+    loadMatricesToShader(yellow);
+    m_box->draw();
+  } 
+  else if (modeToDraw == 3)
+  {
+    m_box->setDrawMode(GL_LINE);
+    loadMatricesToShader(black);
+    m_box->draw();
+  } 
+  else 
+  {
+    m_box->setDrawMode(GL_FILL);
+    loadMatricesToShader(yellow);
+    m_box->draw();
+    m_box->setDrawMode(GL_LINE);
+    loadMatricesToShader(black);
+    m_box->draw();
+  }
+  }
+  else 
+  {
+  if (modeToDraw == 2)
+  {
+    m_box->setDrawMode(GL_FILL);
+    loadMatricesToShader(lightRed);
+    m_box->draw();
+  } 
+  else if (modeToDraw == 3)
+  {
+    m_box->setDrawMode(GL_LINE);
+    loadMatricesToShader(white);
+    m_box->draw();
+  } 
+  else 
+  {
+    m_box->setDrawMode(GL_FILL);
+    loadMatricesToShader(lightRed);
+    m_box->draw();
+    m_box->setDrawMode(GL_LINE);
+    loadMatricesToShader(white);
+    m_box->draw();
+  }
+  }
+
   CollsionTestTrue = 0;
   m_transform.reset();
 

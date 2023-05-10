@@ -11,9 +11,11 @@ class BlockSelector
         ngl::Vec3 position = {ngl::Vec3(0.0f,0.0f,0.0f)};
         ngl::Vec3 nextPosition;
         ngl::Vec3 displacement;
-        
+        float radius;
+        ngl::Vec3 scale;
         float blockScale = 1.0f;
         int isPickup = 0;
+        int isHit = 0;
         int hasBeenPickedUp = 0;
         ngl::Vec3 Velocityo;
         float xStartPosition = -10.0f;

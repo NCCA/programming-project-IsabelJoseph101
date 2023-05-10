@@ -42,7 +42,7 @@ ${PROJECT_SOURCE_DIR}/src/BlockSelector.cpp
 
 ${PROJECT_SOURCE_DIR}/include/NGLScene.h 
 ${PROJECT_SOURCE_DIR}/include/FirstPersonCamera.h 
-${PROJECT_SOURCE_DIR}/include/BlockSelector.h 
+${PROJECT_SOURCE_DIR}/include/BlockSelector.h
 )
 
 target_link_libraries(${TargetName} PRIVATE  NGL Qt::Widgets Qt::OpenGL)
