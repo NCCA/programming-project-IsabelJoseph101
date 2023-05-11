@@ -198,12 +198,19 @@ void NGLScene::initializeGL()
     mapBlock[u].m_position = ngl::Vec3(0.0f,-1000.0f,0.0f);
   }
 
+  // initialising bullet locations
   for (int u = 0; u < m_numBulletShot; u++){
-    bulletShot[u].m_position = ngl::Vec3(0.0f,-1000.0f,0.0f);
+    bulletShot[u].m_position = ngl::Vec3(0.0f,-100.0f,0.0f);
     // makes bullet blocks smaller
     bulletShot[u].m_blockScale = 0.4;
   }
-  
+
+  // initialising enemy locations
+  for (int t = 0; t < numOfEnemies; t++)
+  {
+    enemyBlocks[t].m_position = ngl::Vec3(0, -99, 0); 
+  }
+
 }
 
 void NGLScene::loadMatricesToShader(ngl::Vec4 &_colour)
@@ -372,8 +379,6 @@ void NGLScene::paintGL()
   // combining two if statements using the ternary operator ?
   m_xEnemyLoc += (m_timeCount >= 0 && m_timeCount < 50) ? enemySpeed : -enemySpeed;
 
-  // changes the number of enemies on screen
-  int numOfEnemies = 32;
   // adjust this to change the speed of the pulsing effect
   float frequency = 0.5f;
 
@@ -416,8 +421,7 @@ void NGLScene::paintGL()
     // else if the bulletShot has not been fired, set it to a position off screen
     else 
     {
-      bulletShot[o].m_position.m_z = 10.0f;
-      bulletShot[o].m_position.m_y = -100.0f;
+     bulletShot[o].m_position = ngl::Vec3(0.0f, -100.0f, 10.0f);
     }
   }
 
@@ -486,8 +490,9 @@ void NGLScene::paintGL()
         bulletShot[m_blockNumToShoot].m_xStartPosition = mySelector.m_position.m_x;
         bulletShot[m_blockNumToShoot].m_position.m_z = 10;
         bulletShot[m_blockNumToShoot].m_hasBeenFired = 1;
+        std::cout<<"Bullet number "<<m_blockNumToShoot<<"\n";
 
-        if (m_blockNumToShoot < 9) 
+        if (m_blockNumToShoot < 499) 
           {
             m_blockNumToShoot++;
           } 
