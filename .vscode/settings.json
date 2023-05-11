@@ -73,6 +73,8 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "__nullptr": "cpp",
-        "qopenglwindow": "cpp"
+        "qopenglwindow": "cpp",
+        "*.ipp": "cpp",
+        "__split_buffer": "cpp"
     }
 }
