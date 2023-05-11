@@ -1,7 +1,5 @@
-#include "NGLScene.h"
-#include "BlockSelector.h"
-#include <QGuiApplication>
-#include <QMouseEvent>
+#include <iostream>
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <ngl/NGLInit.h>
 #include <ngl/NGLStream.h>
@@ -13,13 +11,16 @@
 #include <ngl/Obj.h>
 #include <ngl/BBox.h>
 #include <ngl/AABB.h>
-#include <algorithm>
-#include <iostream>
+#include <QGuiApplication>
+#include <QMouseEvent>
 #include <QtGui/QPainter>
+
+#include "NGLScene.h"
+#include "BlockSelector.h"
 
 NGLScene::NGLScene(int _numBlockSelector)
 {
-  setTitle("Collision Game");
+  setTitle("Cosmic Crusaders");
   m_timer.start();
   m_numBlockSelector = _numBlockSelector;
   resetBlockSelector();
@@ -31,6 +32,30 @@ void NGLScene::resetBlockSelector()
   std::generate(std::begin(m_BlockSelectorArray), std::end(m_BlockSelectorArray), [this](){return BlockSelector();});
 }
 
+int NGLScene::checkAABBCollision( const ngl::Vec3& box1Pos, float box1Width, float box1Depth, float box1Height, 
+                                  const ngl::Vec3& box2Pos, float box2Width, float box2Depth, float box2Height)
+{
+    // calculate the minimum and maximum positions of each box
+    ngl::Vec3 box1Min = box1Pos - ngl::Vec3(box1Width / 2, box1Height / 2, box1Depth / 2);
+    ngl::Vec3 box1Max = box1Pos + ngl::Vec3(box1Width / 2, box1Height / 2, box1Depth / 2);
+    ngl::Vec3 box2Min = box2Pos - ngl::Vec3(box2Width / 2, box2Height / 2, box2Depth / 2);
+    ngl::Vec3 box2Max = box2Pos + ngl::Vec3(box2Width / 2, box2Height / 2, box2Depth / 2);
+
+    // check for overlap along each axis
+    if (box1Min.m_x <= box2Max.m_x && box1Max.m_x >= box2Min.m_x &&
+        box1Min.m_y <= box2Max.m_y && box1Max.m_y >= box2Min.m_y &&
+        box1Min.m_z <= box2Max.m_z && box1Max.m_z >= box2Min.m_z)
+    {
+        // boxes are colliding
+        std::cout<<"Collision detected at: ("<<mySelector.m_position.m_x<<", "<<mySelector.m_position.m_y<<", "<<mySelector.m_position.m_z<<")"<<"\n"; 
+        return 1;
+    } 
+    else 
+    {
+      return 0;
+    }
+    // boxes are not colliding
+  }
 // tests if blocks collide
 void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
 {
@@ -41,12 +66,12 @@ void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
 
 
   for (int j = 0; j < totalMapBlocks; j++) {
-    if (mySelector.nextPosition == mapBlocko[j].position) 
+    if (mySelector.m_nextPosition == mapBlocko[j].m_position) 
     {
       checkResult = 1;
-      std::cout<<"Collision detected at: ("<<mapBlocko[j].position.m_x<<", "<<mapBlocko[j].position.m_y<<", "<<mapBlocko[j].position.m_z<<")"<<"\n"; 
+      std::cout<<"Collision detected at: ("<<mapBlocko[j].m_position.m_x<<", "<<mapBlocko[j].m_position.m_y<<", "<<mapBlocko[j].m_position.m_z<<")"<<"\n"; 
       blockPickedUp = j;
-      score = score + 40;
+      m_score = m_score + 40;
     }
     else 
     {
@@ -56,11 +81,11 @@ void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
 
   if (checkResult == 1) 
   {
-      if (mapBlocko[blockPickedUp].isPickup == 1) {
-        mapBlocko[blockPickedUp].hasBeenPickedUp = 1;
+      if (mapBlocko[blockPickedUp].m_isPickup == 1) {
+        mapBlocko[blockPickedUp].m_hasBeenPickedUp = 1;
         std::cout<<"Picked up block"<<"\n";
         mySelector.move();
-        m_box->setCenter(mySelector.position);
+        m_box->setCenter(mySelector.m_position);
       }
     // std::cout<<"collisions detected
   }
@@ -68,45 +93,46 @@ void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
   {
     // std::cout<<"collisions not detected"<<"\n";
     mySelector.move();
-    m_box->setCenter(mySelector.position);
+    m_box->setCenter(mySelector.m_position);
   }
 }
 
 // draws the base grid of blocks
 void NGLScene::mapBlockDraw(ngl::Vec4 fillColour,ngl::Vec4 outlineColour, float cubeSize)
 {
-        m_grid->width(cubeSize);
-        m_grid->depth(cubeSize);
-        m_grid->height(cubeSize);
-        if (modeToDraw == 2){
-          m_grid->setDrawMode(GL_FILL);
-          loadMatricesToShader(fillColour);
-          m_grid->draw();
-        } else if (modeToDraw == 3){
-          m_grid->setDrawMode(GL_LINE);
-          loadMatricesToShader(outlineColour);
-          m_grid->draw();
-        } else {
-          m_grid->setDrawMode(GL_FILL);
-          loadMatricesToShader(fillColour);
-          m_grid->draw();
-          m_grid->setDrawMode(GL_LINE);
-          loadMatricesToShader(outlineColour);
-          m_grid->draw();
-        }
+  m_grid->width(cubeSize);
+  m_grid->depth(cubeSize);
+  m_grid->height(cubeSize);
+  if (m_modeToDraw == 2){
+    m_grid->setDrawMode(GL_FILL);
+    loadMatricesToShader(fillColour);
+    m_grid->draw();
+  } else if (m_modeToDraw == 3){
+    m_grid->setDrawMode(GL_LINE);
+    loadMatricesToShader(outlineColour);
+    m_grid->draw();
+  } else {
+    m_grid->setDrawMode(GL_FILL);
+    loadMatricesToShader(fillColour);
+    m_grid->draw();
+    m_grid->setDrawMode(GL_LINE);
+    loadMatricesToShader(outlineColour);
+    m_grid->draw();
+  }
 }
 
+// pick up objects
   void NGLScene::mapBlockFunc(BlockSelector* mapBlockot, int countNumBlock, ngl::Vec4 fillColour, ngl::Vec4 outlineColour, ngl::Vec3 blockPosition) 
   {
 
-    if (mapBlockot[countNumBlock].hasBeenPickedUp == 0) {
-      mapBlockot[countNumBlock].position  = ngl::Vec3(blockPosition);
-      m_grid->setCenter(mapBlockot[countNumBlock].position);
-      mapBlockDraw(fillColour, outlineColour, mapBlockot[countNumBlock].blockScale);
+    if (mapBlockot[countNumBlock].m_hasBeenPickedUp == 0) {
+      mapBlockot[countNumBlock].m_position  = ngl::Vec3(blockPosition);
+      m_grid->setCenter(mapBlockot[countNumBlock].m_position);
+      mapBlockDraw(fillColour, outlineColour, mapBlockot[countNumBlock].m_blockScale);
     } 
     else {
-      mapBlockot[countNumBlock].position  = ngl::Vec3(0,-1000,0);
-      m_grid->setCenter(mapBlockot[countNumBlock].position);
+      mapBlockot[countNumBlock].m_position  = ngl::Vec3(0,-1000,0);
+      m_grid->setCenter(mapBlockot[countNumBlock].m_position);
       // mapBlockDraw(fillColour, outlineColour, mapBlockot[countNumBlock].blockScale);
     } 
   }
@@ -156,23 +182,23 @@ void NGLScene::initializeGL()
   ngl::VAOPrimitives::createLineGrid("plane", 24, 24, 24);
 
 
-  // boxes for the grid
-  m_grid = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mapBox.blockScale, mapBox.blockScale, mapBox.blockScale);
+  // boxes for the grid using smart pointers
+  m_grid = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mapBox.m_blockScale, mapBox.m_blockScale, mapBox.m_blockScale);
 
-  // player character
-  m_box = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mySelector.blockScale, mySelector.blockScale, mySelector.blockScale);
+  // player character using smart pointers
+  m_box = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mySelector.m_blockScale, mySelector.m_blockScale, mySelector.m_blockScale);
 
-  // bullet
-  m_bullet = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), blockshoot.blockScale, blockshoot.blockScale, blockshoot.blockScale);
-  mySelector.position = {ngl::Vec3(0.0f,0.0f,10.0f)};
+  // bullet using smart pointers 
+  m_bullet = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), blockshoot.m_blockScale, blockshoot.m_blockScale, blockshoot.m_blockScale);
+  mySelector.m_position = {ngl::Vec3(0.0f,0.0f,10.0f)};
 
 
-  for (int u = 0; u < numMap; u++){
-    mapBlock[u].position = ngl::Vec3(0.0f,-1000.0f,0.0f);
+  for (int u = 0; u < m_numMap; u++){
+    mapBlock[u].m_position = ngl::Vec3(0.0f,-1000.0f,0.0f);
   }
 
-  for (int u = 0; u < numBlockShoto; u++){
-    blockshoto[u].position = ngl::Vec3(0.0f,-1000.0f,0.0f);
+  for (int u = 0; u < m_numBulletShot; u++){
+    bulletShot[u].m_position = ngl::Vec3(0.0f,-1000.0f,0.0f);
   }
   
 }
@@ -220,6 +246,7 @@ void NGLScene::paintGL()
   ngl::Random::setSeed(1234);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+  //----------------------------------------------------------------------------------------------------------------------
   // setting colours
   ngl::Vec4 red(1.0f, 0.0f, 0.0f, 1.0f);
   ngl::Vec4 green(0.0f, 1.0f, 0.0f, 1.0f);
@@ -235,117 +262,175 @@ void NGLScene::paintGL()
   ngl::Vec4 pink(0.95f, 0.79f, 0.88f, 1.0f);
   ngl::Vec4 appleGreen(0.8f, 0.95f, 0.79f, 1.0f);
   ngl::Vec4 grassGreen(0.34f, 0.74f, 0.57f, 1.0f);
-  ngl::Vec4 orange(0.96f, 0.74f, 0.60f, 1.0f);
+  ngl::Vec4 orange(1.0f, 0.81f, 0.31f, 1.0f);
   ngl::Vec4 lightRed(1.0f, 0.55f, 0.55f, 1.0f);
-
+  //----------------------------------------------------------------------------------------------------------------------
 
 
   int currentFrameClamp = static_cast<int>(currentFrame*10);
   int FrameRim = currentFrameClamp % 20;
   
 
-  if (timeCount == 0) 
+  if (m_timeCount == 0) 
   {
-    timeIncrease = 1;
+    m_timeIncrease = 1;
   }
-  else if (timeCount == 100) {
-    timeIncrease = 0;
+  else if (m_timeCount == 100) {
+    m_timeIncrease = 0;
   }
 
-  if (timeIncrease == 0) {
-    timeCount --;
+  if (m_timeIncrease == 0) {
+    m_timeCount --;
   }
   else {
-    timeCount ++;
+    m_timeCount ++;
   }
-
-  keyPressTimer = timeCount % 4;
-
-  std::cout<<"time count = "<<timeCount<<" keyPauseSeprate = "<<keyPressTimer<< "\n";
   
 
-  
+  m_keyPressTimer = m_timeCount % 4;
+
+  std::cout<<"time count = "<<m_timeCount<<" keyPauseSeprate = "<<m_keyPressTimer<< "\n";
+
   int countNumBlock = 1;
-  
+
+  // define the start and end hues for the gradient
+  float startHue = 0.0f;
+  float endHue = 300.0f;
+
+  // define the reduced saturation and increased brightness for the pastel effect
+  float saturation = 0.5f;
+  float value = 1.2f;
+
   for (int row = 0; row < nrRows; ++row)
   {
     for (int col = 0; col < nrColumns; ++col)
     {
-        mapBlockFunc(mapBlock, countNumBlock, appleGreen, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing, -1, static_cast<float>(row - (nrRows / 2)) * spacing));
-        countNumBlock++;
-    }
-   }
+      // calculate the hue for this block based on its position in the grid
+      float t = static_cast<float>(col) / static_cast<float>(nrColumns - 1);
+      float hue = startHue + (t * (endHue - startHue));
 
-    // mapBlock[countNumBlock].blockScale = pickUpScale;
+      // calculate the RGB values for the pastel color
+      float c = saturation * value;
+      float x = c * (1.0f - std::abs(std::fmod(hue / 60.0f, 2.0f) - 1.0f));
+      float m = value - c;
+      float r, g, b;
+      if (hue < 60.0f) {
+        r = c;
+        g = x;
+        b = 0.0f;
+      } else if (hue < 120.0f) {
+        r = x;
+        g = c;
+        b = 0.0f;
+      } else if (hue < 180.0f) {
+        r = 0.0f;
+        g = c;
+        b = x;
+      } else if (hue < 240.0f) {
+        r = 0.0f;
+        g = x;
+        b = c;
+      } else if (hue < 300.0f) {
+        r = x;
+        g = 0.0f;
+        b = c;
+      } else {
+        r = c;
+        g = 0.0f;
+        b = x;
+      }
+
+      // adjust the RGB values for the pastel effect
+      r = r * 0.8f + 0.6f;
+      g = g * 0.8f + 0.6f;
+      b = b * 0.8f + 0.6f;
+
+      // create a Vec4 color from the RGB values and pass it to the mapBlockFunc function
+      ngl::Vec4 color = ngl::Vec4(r, g, b, 1.0f);
+      mapBlockFunc(mapBlock, countNumBlock, color, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing, -1, static_cast<float>(row - (nrRows / 2)) * spacing));
+
+      countNumBlock++;
+    }
+  }
+
+    // mapBlock[countNumBlock].blockScale = m_pickUpScale;
     // mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(3,0,4));
     // mapBlock[countNumBlock].isPickup = 1;
     // countNumBlock++;
 
     
-    // mapBlock[countNumBlock].blockScale = pickUpScale;
+    // mapBlock[countNumBlock].blockScale = m_pickUpScale;
     // mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-9,0,0));
     // mapBlock[countNumBlock].isPickup = 1;
     // countNumBlock++;
 
-    // mapBlock[countNumBlock].blockScale = pickUpScale;
+    // mapBlock[countNumBlock].blockScale = m_pickUpScale;
     // mapBlockFunc(mapBlock, countNumBlock, orange, black, ngl::Vec3(-7,0,-7));
     // mapBlock[countNumBlock].isPickup = 1;
     // countNumBlock++;
 
-    // start of enemy blocks
-    // offset in x direction
-    int enemyXOffset = 2;
-    // offset in y direction
-    int enemyYOffset = 0;
-    // speed that enemy blocks move in
-    float enemySpeed = 0.01f;
+  // start of enemy blocks
+  // offset in x direction
+  int enemyXOffset = 2;
+  // offset in z direction
+  int enemyZOffset = -2;
+  // speed that enemy blocks move in
+  float enemySpeed = 0.09f;
 
-    // moves enemies based on time count
-    if (timeCount == 20) 
+  // moves enemies based on time count
+  if (m_timeCount ==  0.1) 
+  {
+    m_zEnemyLoc++;
+  }
+  // combining two if statements using the ternary operator ?
+  m_xEnemyLoc += (m_timeCount >= 0 && m_timeCount < 50) ? enemySpeed : -enemySpeed;
+
+  // changes the number of enemies on screen
+  int numOfEnemies = 8;
+  // adjust this to change the speed of the pulsing effect
+  float frequency = 0.5f;
+  // add another loop for the second row
+  for (int j = 0; j < 2; j++) 
+  {
+    for (int i = 0; i < numOfEnemies; i++)
     {
-      zEnemyLoc++;
+      // calculate the color of the block based on the pulsing effect
+      float pulsation = sin(frequency * m_timeCount);
+      ngl::Vec4 blockColor = ngl::Vec4(1.0f - pulsation, 0.0f, 0.0f, 1.0f); // starts from red and fades to black
+      
+      mapBlockFunc(mapBlock, countNumBlock, blockColor, red, ngl::Vec3(m_xEnemyLoc + enemyXOffset, 0, m_zEnemyLoc + enemyZOffset));
+      countNumBlock++;
+      enemyXOffset += 2;
     }
-    // combining two if statements using the ternary operator ?
-    xEnemyLoc += (timeCount >= 0 && timeCount < 50) ? enemySpeed : -enemySpeed;
+    // reset x offset for the next row
+    enemyXOffset = 2;
+    // offset y for the next row
+      // offset in y direction
+    enemyZOffset = 0;
+  }
 
-    // changes the number of enemies on screen
-    int numOfEnemies = 8;
-    for (int j = 0; j < 2; j++) // add another loop for the second row
-    {
-      for (int i = 0; i < numOfEnemies; i++)
-      {
-        mapBlockFunc(mapBlock, countNumBlock, yellow, white, ngl::Vec3(xEnemyLoc + enemyXOffset, 0,zEnemyLoc + enemyYOffset));
-        countNumBlock++;
-        enemyXOffset += 2;
-      }
-      // reset x offset for the next row
-      enemyXOffset = 2;
-      // offset y for the next row
-    }
-
-
-  for (int o = 0; o < numBlockShoto; o++) 
+  for (int o = 0; o < m_numBulletShot; o++) 
   {
     // checks if block if fired
-    if (blockshoto[o].hasBeenFired == 1) 
+    if (bulletShot[o].m_hasBeenFired == 1) 
     {
-      // updates position of blockshoto if fired
-      blockshoto[o].position.m_z = blockshoto[o].position.m_z - 0.2f;
-      mapBlockFunc(blockshoto, o, red, white, ngl::Vec3(blockshoto[o].xStartPosition, 0, blockshoto[o].position.m_z));
+      // updates position of bulletShot if fired
+      bulletShot[o].m_position.m_z = bulletShot[o].m_position.m_z - 0.2f;
+      mapBlockFunc(bulletShot, o, white, white, ngl::Vec3(bulletShot[o].m_xStartPosition, 0, bulletShot[o].m_position.m_z));
       
-      // check if blockshoto has reached a certain position and delete it if it has
-      if (blockshoto[o].position.m_z < -10.0f) 
+      // check if bulletShot has reached a certain position and delete it if it has
+      if (bulletShot[o].m_position.m_z < -10.0f) 
       {
-        blockshoto[o].position.m_z = 10.0f;
-        blockshoto[o].position.m_y = -100.0f;
-        blockshoto[o].hasBeenFired = 0;
+        bulletShot[o].m_position.m_z = 10.0f;
+        bulletShot[o].m_position.m_y = -100.0f;
+        bulletShot[o].m_hasBeenFired = 0;
       }
     }
-    // else if the blockshoto has not been fired, set it to a position off screen
+    // else if the bulletShot has not been fired, set it to a position off screen
     else 
     {
-      blockshoto[o].position.m_z = 10.0f;
-      blockshoto[o].position.m_y = -100.0f;
+      bulletShot[o].m_position.m_z = 10.0f;
+      bulletShot[o].m_position.m_y = -100.0f;
     }
   }
 
@@ -353,8 +438,8 @@ void NGLScene::paintGL()
 
   for (int i = 0; i < 3; i++) 
   {
-    ngl::Vec3 position = ngl::Vec3(i * 2 - 2, 0, 2); // calculate the position of the block
-    mapBlockFunc(mapBlock, countNumBlock + i, orange, black, position); // place the block
+    ngl::Vec3 m_position = ngl::Vec3(i * 2 - 2, 0, 2); // calculate the position of the block
+    mapBlockFunc(mapBlock, countNumBlock + i, orange, black, m_position); // place the block
   }
   
 
@@ -368,37 +453,37 @@ void NGLScene::paintGL()
     // moves player's character right
     case Qt::Key_Right:
     {
-      mySelector.displacement = {ngl::Vec3(mySelector.displacementAmount,0.0f,0.0f)};
+      mySelector.m_displacement = {ngl::Vec3(mySelector.m_displacementAmount,0.0f,0.0f)};
       keyPressed = 1;
       mySelector.moveNextPosition();
-      CollisionTest(mapBlock, numMap);
+      CollisionTest(mapBlock, m_numMap);
       break;
     }
     // moves player's character left
     case Qt::Key_Left:
     {
-      mySelector.displacement = {ngl::Vec3(-mySelector.displacementAmount,0.0f,0.0f)};
+      mySelector.m_displacement = {ngl::Vec3(-mySelector.m_displacementAmount,0.0f,0.0f)};
       keyPressed = 1;
       mySelector.moveNextPosition();
-      CollisionTest(mapBlock, numMap);
+      CollisionTest(mapBlock, m_numMap);
       break;
     }
     // shoots blocks with spacebar
     case Qt::Key_Space: 
     {
-      if (keyPressTimer == 0) 
+      if (m_keyPressTimer == 0) 
       {
-        blockshoto[blockNumToShoot].xStartPosition = mySelector.position.m_x;
-        blockshoto[blockNumToShoot].position.m_z = 10;
-        blockshoto[blockNumToShoot].hasBeenFired = 1;
+        bulletShot[m_blockNumToShoot].m_xStartPosition = mySelector.m_position.m_x;
+        bulletShot[m_blockNumToShoot].m_position.m_z = 10;
+        bulletShot[m_blockNumToShoot].m_hasBeenFired = 1;
 
-        if (blockNumToShoot < 9) 
+        if (m_blockNumToShoot < 9) 
           {
-            blockNumToShoot++;
+            m_blockNumToShoot++;
           } 
           else 
           {
-            blockNumToShoot = 1;
+            m_blockNumToShoot = 1;
           }
       }
       break;
@@ -439,53 +524,53 @@ void NGLScene::paintGL()
     // wireframe modes 1 = points, 2 = lines, 3 = fill
     case Qt::Key_1:
     {
-      modeToDraw = 1;
+      m_modeToDraw = 1;
       break;
     }
     case Qt::Key_2:
     {
-      modeToDraw = 2;
+      m_modeToDraw = 2;
       break;
     }
     case Qt::Key_3:
     {
-      modeToDraw = 3;
+      m_modeToDraw = 3;
       break;
     }
 
     // block scale controls
     case Qt::Key_4:
     {
-      if (mapBlock[1].blockScale >= 0) 
+      if (mapBlock[1].m_blockScale >= 0) 
       {
-        for (int u = 0; u < numMap; u++)
+        for (int u = 0; u < m_numMap; u++)
         {
-          mapBlock[u].blockScale = mapBlock[u].blockScale - 0.01f;
+          mapBlock[u].m_blockScale = mapBlock[u].m_blockScale - 0.01f;
         }
       }
       break;
     }
     case Qt::Key_5:
     {
-      for (int u = 0; u < numMap; u++)
+      for (int u = 0; u < m_numMap; u++)
       {
-        mapBlock[u].blockScale = mapBlock[u].blockScale + 0.01f;
+        mapBlock[u].m_blockScale = mapBlock[u].m_blockScale + 0.01f;
       }
       break;
     }
     case Qt::Key_6:
     {
-      for (int u = 0; u < numMap; u++)
+      for (int u = 0; u < m_numMap; u++)
       {
-        mapBlock[u].blockScale = 0.9f;
+        mapBlock[u].m_blockScale = 0.9f;
       }
       break;
     }
     case Qt::Key_7:
     {
-      for (int u = 0; u < numMap; u++)
+      for (int u = 0; u < m_numMap; u++)
       {
-        mapBlock[u].blockScale = 1.0f;
+        mapBlock[u].m_blockScale = 1.0f;
       }
       break;
     }
@@ -503,13 +588,13 @@ glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 m_transform.reset();
 if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12)) 
 {
-  if (modeToDraw == 2)
+  if (m_modeToDraw == 2)
   {
     m_box->setDrawMode(GL_FILL);
-    loadMatricesToShader(yellow);
+    loadMatricesToShader(lilac);
     m_box->draw();
   } 
-  else if (modeToDraw == 3)
+  else if (m_modeToDraw == 3)
   {
     m_box->setDrawMode(GL_LINE);
     loadMatricesToShader(black);
@@ -518,7 +603,7 @@ if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12))
   else 
   {
     m_box->setDrawMode(GL_FILL);
-    loadMatricesToShader(yellow);
+    loadMatricesToShader(lilac);
     m_box->draw();
     m_box->setDrawMode(GL_LINE);
     loadMatricesToShader(black);
@@ -527,13 +612,13 @@ if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12))
   }
   else 
   {
-  if (modeToDraw == 2)
+  if (m_modeToDraw == 2)
   {
     m_box->setDrawMode(GL_FILL);
-    loadMatricesToShader(lightRed);
+    loadMatricesToShader(pink);
     m_box->draw();
   } 
-  else if (modeToDraw == 3)
+  else if (m_modeToDraw == 3)
   {
     m_box->setDrawMode(GL_LINE);
     loadMatricesToShader(white);
@@ -542,7 +627,7 @@ if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12))
   else 
   {
     m_box->setDrawMode(GL_FILL);
-    loadMatricesToShader(lightRed);
+    loadMatricesToShader(pink);
     m_box->draw();
     m_box->setDrawMode(GL_LINE);
     loadMatricesToShader(white);
@@ -564,7 +649,7 @@ if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12))
   painter.setPen(Qt::white);
 
   // draw the text
-  painter.drawText(QPoint(12, 40), "Score: " + QString::number(score));
+  painter.drawText(QPoint(12, 40), "m_score: " + QString::number(m_score));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

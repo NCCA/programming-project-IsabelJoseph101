@@ -5,30 +5,34 @@
 
 class BlockSelector 
 {
+    // private and public are different access levels
+    // public can be accessed anywhere in the program
+    // all variables under a class are denoted with 'm_' as per NCCA coding standard
     public :
         BlockSelector();
-        float displacementAmount = 0.2f;
-        ngl::Vec3 position = {ngl::Vec3(0.0f,0.0f,0.0f)};
-        ngl::Vec3 nextPosition;
-        ngl::Vec3 displacement;
-        float radius;
-        ngl::Vec3 scale;
-        float blockScale = 1.0f;
-        int isPickup = 0;
-        int isHit = 0;
-        int hasBeenPickedUp = 0;
-        ngl::Vec3 Velocityo;
-        float xStartPosition = -10.0f;
-        int hasBeenFired = 0;
+        void move();
+        void moveNextPosition();
 
-        void move() {
-            position = position + displacement;
-        }
-
-        void moveNextPosition() {
-            nextPosition = position + displacement;
-            
-        }
+        // public variables
+        float m_width;
+        float m_height;
+        float m_depth;
+        float m_displacementAmount = 0.2f;
+        ngl::Vec3 m_position = {ngl::Vec3(0.0f,0.0f,0.0f)};
+        ngl::Vec3 m_displacement;
+        ngl::Vec3 m_nextPosition;
+        float m_radius;
+        ngl::Vec3 m_scale;
+        float m_blockScale = 1.0f;
+        int m_isPickup = 0;
+        int m_isHit = 0;
+        int m_hasBeenPickedUp = 0;
+        ngl::Vec3 m_dimensions;
+        float m_xStartPosition = -10.0f;
+        int m_hasBeenFired = 0;
+    
+    // private can only be accessd from within the class
+    private : 
 };
 
 #endif
