@@ -1,0 +1,5 @@
+/home/s5221926/CFA/programming-project-IsabelJoseph101/build-qtCreator-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/rebuild_cache.dir
+/home/s5221926/CFA/programming-project-IsabelJoseph101/build-qtCreator-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/edit_cache.dir
+/home/s5221926/CFA/programming-project-IsabelJoseph101/build-qtCreator-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/qtCreator.dir
+/home/s5221926/CFA/programming-project-IsabelJoseph101/build-qtCreator-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/qtCreator_autogen_timestamp_deps.dir
+/home/s5221926/CFA/programming-project-IsabelJoseph101/build-qtCreator-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/qtCreator_autogen.dir
