@@ -17,4 +17,4 @@ Enemies were created so that they move left and right and occasionally down, usi
 
 This was also based on Jon Macy’s firstPersonCamera demo and the snake game.
 
-!(images/screenshot.png)
+![screenshot of game](https://github.com/NCCA/programming-project-IsabelJoseph101/blob/main/images/screenshot.png)
