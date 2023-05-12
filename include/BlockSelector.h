@@ -18,7 +18,7 @@ class BlockSelector
         float m_depth = 1.0f;
         float m_height = 1.0f;
         float m_displacementAmount = 0.2f;
-        ngl::Vec3 m_position = {ngl::Vec3(0.0f,0.0f,0.0f)};
+        ngl::Vec3 m_position = {ngl::Vec3(0.0f, 0.0f, 7.0f)};
         ngl::Vec3 m_displacement;
         ngl::Vec3 m_nextPosition;
         float m_radius;

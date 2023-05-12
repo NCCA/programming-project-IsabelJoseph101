@@ -18,20 +18,24 @@
 #include "NGLScene.h"
 #include "BlockSelector.h"
 
+// code used from Jon Macey's snake game and NGLDemo, firstPersonCamera
 NGLScene::NGLScene(int _numBlockSelector)
 {
+  // title
   setTitle("Cosmic Crusaders");
   m_timer.start();
   m_numBlockSelector = _numBlockSelector;
   resetBlockSelector();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::resetBlockSelector()
 {
   m_BlockSelectorArray.resize(m_numBlockSelector);
   std::generate(std::begin(m_BlockSelectorArray), std::end(m_BlockSelectorArray), [this](){return BlockSelector();});
 }
 
+// test AABB collisions
+//----------------------------------------------------------------------------------------------------------------------
 int NGLScene::checkAABBCollision( const ngl::Vec3& box1Pos, float box1Width, float box1Depth, float box1Height, 
                                   const ngl::Vec3& box2Pos, float box2Width, float box2Depth, float box2Height)
 {
@@ -46,17 +50,19 @@ int NGLScene::checkAABBCollision( const ngl::Vec3& box1Pos, float box1Width, flo
         box1Min.m_y <= box2Max.m_y && box1Max.m_y >= box2Min.m_y &&
         box1Min.m_z <= box2Max.m_z && box1Max.m_z >= box2Min.m_z)
     {
-        // boxes are colliding
+        // returns if boxes are colliding
         std::cout<<"Collision detected ---------------------------------------------"<<"\n"; 
         return 1;
     } 
     else 
     {
+      // returns if not collided
       // std::cout<<"Collision not detected"<<"\n"; 
       return 0;
     }
-    // boxes are not colliding
   }
+
+//----------------------------------------------------------------------------------------------------------------------
 // tests if blocks collide
 void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
 {
@@ -98,6 +104,7 @@ void NGLScene::CollisionTest(BlockSelector* mapBlocko, int totalMapBlocks)
   }
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 // draws the base grid of blocks
 void NGLScene::mapBlockDraw(ngl::Vec4 fillColour,ngl::Vec4 outlineColour, float cubeSize)
 {
@@ -122,6 +129,7 @@ void NGLScene::mapBlockDraw(ngl::Vec4 fillColour,ngl::Vec4 outlineColour, float 
   }
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 // pick up objects
   void NGLScene::mapBlockFunc(BlockSelector* mapBlockot, int countNumBlock, ngl::Vec4 fillColour, ngl::Vec4 outlineColour, ngl::Vec3 blockPosition) 
   {
@@ -138,11 +146,14 @@ void NGLScene::mapBlockDraw(ngl::Vec4 fillColour,ngl::Vec4 outlineColour, float 
     } 
   }
 
+//----------------------------------------------------------------------------------------------------------------------
+
 NGLScene::~NGLScene()
 {
   std::cout << "Shutting down NGL, removing VAO's and Shaders\n";
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::resizeGL(int _w, int _h)
 {
   m_cam.setProjection(75.0f, static_cast<float>(_w) / _h, 0.05f, 350.0f);
@@ -150,6 +161,7 @@ void NGLScene::resizeGL(int _w, int _h)
   m_win.height = static_cast<int>(_h * devicePixelRatio());
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::initializeGL()
 {
 
@@ -187,11 +199,12 @@ void NGLScene::initializeGL()
   m_grid = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mapBox.m_blockScale, mapBox.m_blockScale, mapBox.m_blockScale);
 
   // player character using smart pointers
-  m_box = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), mySelector.m_blockScale, mySelector.m_blockScale, mySelector.m_blockScale);
+  m_box = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 10.0f), mySelector.m_blockScale, mySelector.m_blockScale, mySelector.m_blockScale);
 
   // bullet using smart pointers 
   m_bullet = std::make_unique<ngl::BBox>(ngl::Vec3(0.0f, 0.0f, 0.0f), blockshoot.m_blockScale, blockshoot.m_blockScale, blockshoot.m_blockScale);
-  mySelector.m_position = {ngl::Vec3(0.0f,0.0f,10.0f)};
+
+  mySelector.m_position = {ngl::Vec3(0.0f, 0.0f, 10.0f)};
 
 
   for (int u = 0; u < m_numMap; u++){
@@ -199,7 +212,8 @@ void NGLScene::initializeGL()
   }
 
   // initialising bullet locations
-  for (int u = 0; u < m_numBulletShot; u++){
+  for (int u = 0; u < m_numBulletShot; u++)
+  {
     bulletShot[u].m_position = ngl::Vec3(0.0f,-100.0f,0.0f);
     // makes bullet blocks smaller
     bulletShot[u].m_blockScale = 0.4;
@@ -208,11 +222,39 @@ void NGLScene::initializeGL()
   // initialising enemy locations
   for (int t = 0; t < numOfEnemies; t++)
   {
+    // setting initial enemy block position
     enemyBlocks[t].m_position = ngl::Vec3(0, -99, 0); 
   }
 
+//----------------------------------------------------------------------------------------------------------------------
+  int barrierOffsetAmount = 2;
+ 
+  int totalBarrierWidth = (5 * numOfBarriers / 3)/2;
+  // initialising barrier locations
+  int barrierOffset = 0;
+  int barrierToPlace = 0;
+  for (int barrier = 0; barrier <= (numOfBarriers / 3); barrier++){
+    std::cout<<"barrier = "<<barrier<<"\n";
+    
+    for (int barrierGroup = 0; barrierGroup <= 2; barrierGroup++){
+       barrierBlocks[barrierToPlace].m_position = ngl::Vec3((barrierGroup + barrierOffset) - totalBarrierWidth + 1, 0, 6);
+       barrierToPlace++;
+       
+       std::cout<<"barrierToPlace = "<<barrierToPlace<<" Barrier = "<<barrier<<"\n";
+    }
+    barrierOffset = barrierOffset + 5;
+  }
+  // for (int barrier = 0; barrier < numOfBarriers; barrier++)
+  // {
+  //   // setting initial barrier position
+  //   barrierBlocks[barrier].m_position = ngl::Vec3(totalBarrierWidth + barrierOffset, 0, 0);
+  //   barrierOffset = barrierOffset + barrierOffsetAmount;
+  // }
+
+  m_timeCount = 0;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::loadMatricesToShader(ngl::Vec4 &_colour)
 {
   ngl::Mat4 MVP = m_cam.getVP() * m_transform.getMatrix();
@@ -220,7 +262,7 @@ void NGLScene::loadMatricesToShader(ngl::Vec4 &_colour)
   ngl::ShaderLib::setUniform("Colour", _colour);
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::paintGL()
 {
   glEnable(GL_DEPTH_TEST);
@@ -249,8 +291,8 @@ void NGLScene::paintGL()
     m_cam.move(xDirection, yDirection, zDirection, m_deltaTime);
   }
 
-  int nrRows = 20;
-  int nrColumns = 40;
+  int nrRows = 24;
+  int nrColumns = 38;
   float offsetSpacing = 0.5;
   float spacing = 1.0;
   ngl::Random::setSeed(1234);
@@ -281,11 +323,11 @@ void NGLScene::paintGL()
   int FrameRim = currentFrameClamp % 20;
   
 
-  if (m_timeCount == 0) 
+  if (m_timeCount <= 0) 
   {
     m_timeIncrease = 1;
   }
-  else if (m_timeCount == 100) {
+  else if (m_timeCount >= 500) {
     m_timeIncrease = 0;
   }
 
@@ -295,12 +337,15 @@ void NGLScene::paintGL()
   else {
     m_timeCount ++;
   }
-  
 
+
+  // std::cout<<"m_timeCount = "<<m_timeCount<<"\n";
+
+  modTimeCount = m_timeCount % 100;
   m_keyPressTimer = m_timeCount % 4;
 
   // std::cout<<"time count = "<<m_timeCount<<" keyPauseSeprate = "<<m_keyPressTimer<< "\n";
-
+  //----------------------------------------------------------------------------------------------------------------------
   int countNumBlock = 1;
 
   // define the start and end hues for the gradient
@@ -359,50 +404,90 @@ void NGLScene::paintGL()
       ngl::Vec4 color = ngl::Vec4(r, g, b, 1.0f);
       mapBlockFunc(mapBlock, countNumBlock, color, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing, -1, static_cast<float>(row - (nrRows / 2)) * spacing));
 
+      // incremental value
       countNumBlock++;
     }
   }
 
+//----------------------------------------------------------------------------------------------------------------------
   // start of enemy blocks
+// start of enemy blocks
   // offset in x direction
-  int enemyXOffset = 2;
+  int gapSpace = 3;
+  int enemyXOffset = gapSpace;
   // offset in z direction
-  int enemyZOffset = -2;
+  int enemyZOffset = -gapSpace;
   // speed that enemy blocks move in
   float enemySpeed = 0.09f;
-
-  // moves enemies based on time count
-  if (m_timeCount ==  0.1) 
-  {
-    m_zEnemyLoc++;
-  }
-  // combining two if statements using the ternary operator ?
-  m_xEnemyLoc += (m_timeCount >= 0 && m_timeCount < 50) ? enemySpeed : -enemySpeed;
 
   // adjust this to change the speed of the pulsing effect
   float frequency = 0.5f;
 
-    for (int i = 0; i < 4; i++) {  // iterate through rows
-    for (int j = 0; j < 4; j++) {  // iterate through columns
+  // interval for enemy blocks to move down
+  int moveDownInterval = 50;
+  // counter to track time for move down interval
+  int moveDownCounter = 0;
+
+  // moves enemies based on time count
+  if (m_timeCount ==  moveDownInterval) 
+  {
+    m_zEnemyLoc += enemyZOffset; // move blocks down
+    moveDownCounter = 0; // reset move down counter
+  }
+  else
+  {
+    moveDownCounter++; // increment move down counter
+  }
+
+  // move enemy blocks left and right
+
+  if (m_xEnemyLoc >= 10) {
+    m_xEnemyDirection = 1;
+  } else if (m_xEnemyLoc <= -10){
+    m_xEnemyDirection = 0;
+  }
+  
+  std::cout<<"m_xEnemyLoc = "<<m_xEnemyLoc<<" m_xEnemyDirection = "<<m_xEnemyDirection<<"\n";
+
+  if (m_xEnemyDirection == 0) {
+    m_xEnemyLoc = m_xEnemyLoc + enemySpeed;
+  } else if (m_xEnemyDirection == 1){
+    m_xEnemyLoc = m_xEnemyLoc - enemySpeed;
+  }
+  // m_xEnemyLoc += (m_timeCount >= 0 && m_timeCount < 20) ? enemySpeed : -enemySpeed;
+
+  // iterate through rows
+  for (int i = 0; i < 4; i++) 
+  { 
+    // calculate the row offset
+    float rowOffset = i % 2 == 0 ? 0 : enemyXOffset;
+
+    // iterate through columns
+    for (int j = 0; j < 8; j++) 
+    {  
       // calculate the index of the block in the 1D array
-      int index = i * 4 + j;
+      int index = i * 8 + j;
+
       // calculate the color of the block based on the pulsing effect
       float pulsation = sin(frequency * m_timeCount);
-      // starts from red and fades to black
+      // starts from red and switches to black
       ngl::Vec4 blockColor = ngl::Vec4(1.0f - pulsation, 0.0f, 0.0f, 1.0f);
+      // sets value to has been killed to 0
       if (enemyBlocks[index].m_hasBeenKilled == 0) 
       {
         // set the position of the block based on its row and column indices
-        enemyBlocks[index].m_position = ngl::Vec3(m_xEnemyLoc + j * 2, 0, m_zEnemyLoc + i * 2);
+        enemyBlocks[index].m_position = ngl::Vec3((m_xEnemyLoc + j * gapSpace + rowOffset) - 10, 0, m_zEnemyLoc + i * gapSpace);
       } 
       else 
       {
+        // else changes the position to offscreen
         enemyBlocks[index].m_position = ngl::Vec3(0, -99, 0); 
       }
       mapBlockFunc(mapBlock, index, blockColor, red, enemyBlocks[index].m_position);
     }
   }
-
+//----------------------------------------------------------------------------------------------------------------------
+// bullet blocks
   for (int o = 0; o < m_numBulletShot; o++) 
   {
     // checks if block if fired
@@ -418,46 +503,91 @@ void NGLScene::paintGL()
         bulletShot[o].m_hasBeenFired = 0;
       }
     }
-    // else if the bulletShot has not been fired, set it to a position off screen
     else 
     {
+    // else if the bulletShot has not been fired, set it to a position off screen
      bulletShot[o].m_position = ngl::Vec3(0.0f, -100.0f, 10.0f);
     }
   }
 
-
-
-  for (int i = 0; i < 3; i++) 
-  {
-    ngl::Vec3 m_position = ngl::Vec3(i * 2 - 2, 0, 2); // calculate the position of the block
-    mapBlockFunc(mapBlock, countNumBlock + i, orange, black, m_position); // place the block
-  }
-  
-
-  int CollsionTestTrue;
-
-
+  //----------------------------------------------------------------------------------------------------------------------
+  // checking through number of bullets shot
   for (int u = 0; u < m_numBulletShot; u++)
   {
+    // checking through nunmber of enemies
     for (int t = 0; t < numOfEnemies; t++)
     {
-        int ifHit = 0;
-        ifHit = checkAABBCollision( bulletShot[u].m_position, bulletShot[u].m_width, bulletShot[u].m_depth, bulletShot[u].m_height, 
-                            enemyBlocks[t].m_position, enemyBlocks[t].m_width, enemyBlocks[t].m_depth, enemyBlocks[t].m_height);
-        if (ifHit == 1)
-        {
-          enemyBlocks[t].m_hasBeenKilled = 1.0f;
-          // changes position to off screen if hit
-          bulletShot[u].m_position = ngl::Vec3(0.0f, -100.0f, 10.0f);
-          // if bullet hits enemy it adds 40 to score
-          m_score = m_score + 40;
-        }
+      // seys inial value to 0
+      int ifHit = 0;
+      // checks collisions between bullets and enemies
+      ifHit = checkAABBCollision( bulletShot[u].m_position, bulletShot[u].m_width, bulletShot[u].m_depth, bulletShot[u].m_height, 
+                                  enemyBlocks[t].m_position, enemyBlocks[t].m_width, enemyBlocks[t].m_depth, enemyBlocks[t].m_height);
+      // if the function returns a 1, then a collision is detected
+      if (ifHit == 1)
+      {
+        // denotes that an enemy has been killed and sets value to 1
+        enemyBlocks[t].m_hasBeenKilled = 1.0f;
+        // changes position to off screen if hit
+        bulletShot[u].m_position = ngl::Vec3(0.0f, -100.0f, 10.0f);
+        bulletShot[u].m_hasBeenFired = 0;
+        // if bullet hits enemy it adds 40 to score
+        m_score = m_score + 40;
+      }
     }
   }
-    
 
+  //----------------------------------------------------------------------------------------------------------------------
+  // check if any enemies are left
+  int enemiesLeft = 0;
+  for (int i = 0; i < numOfEnemies; i++)
+  {
+    if (enemyBlocks[i].m_hasBeenKilled == 0)
+    {
+      enemiesLeft = 1;
+      break;
+    }
+  }
 
-  
+  if (enemiesLeft == 0)
+  {
+    std::cout << "all enemies have been killed" << std::endl;
+  }
+  //----------------------------------------------------------------------------------------------------------------------
+
+  for (int barrier = 0; barrier < numOfBarriers; barrier++)
+  {
+    if (barrierBlocks[barrier].m_hasBeenKilled == 0){
+      mapBlockFunc(barrierBlocks, barrier, orange, white, barrierBlocks[barrier].m_position);
+    }
+  }
+
+  //----------------------------------------------------------------------------------------------------------------------
+  // checking through number of bullets shot
+  for (int u = 0; u < m_numBulletShot; u++)
+  {
+    // checking through nunmber of barriers
+    for (int t = 0; t < numOfBarriers; t++)
+    {
+      // seys inial value to 0
+      int ifHit = 0;
+      // checks collisions between bullets and barriers
+      ifHit = checkAABBCollision( bulletShot[u].m_position, bulletShot[u].m_width, bulletShot[u].m_depth, bulletShot[u].m_height, 
+                                  barrierBlocks[t].m_position, barrierBlocks[t].m_width, barrierBlocks[t].m_depth, barrierBlocks[t].m_height);
+      // if the function returns a 1, then a collision is detected
+      if (ifHit == 1)
+      {
+        // denotes that an barriers has been killed and sets value to 1
+        barrierBlocks[t].m_hasBeenKilled = 1.0f;
+        barrierBlocks[t].m_position = ngl::Vec3(0.0f, -101.0f, 10.0f);
+        // changes position to off screen if hit
+        bulletShot[u].m_position = ngl::Vec3(0.0f, -100.0f, 10.0f);
+        bulletShot[u].m_hasBeenFired = 0;
+      }
+    }
+  }
+  //----------------------------------------------------------------------------------------------------------------------    
+  // setting up variable for use in key controls
+  int CollsionTestTrue;
 
   // setting key controls
   foreach (Qt::Key key, m_keysPressed)
@@ -503,6 +633,13 @@ void NGLScene::paintGL()
       }
       break;
     }
+
+    // resets with r button
+    // case Qt::Key_R: 
+    // {
+    //   resetBlockSelector();
+    //   break;
+    // }
 
     // camera movements
     case Qt::Key_A:
@@ -653,6 +790,8 @@ if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12))
   CollsionTestTrue = 0;
   m_transform.reset();
 
+//----------------------------------------------------------------------------------------------------------------------
+// creating text for the score system
 // create a new painter
   QPainter painter(this);
 
@@ -661,12 +800,12 @@ if (FrameRim < 2 || (FrameRim >= 10 && FrameRim <= 12))
 
   // set the font and pen color for the text
   painter.setFont(QFont("Helvetica", 22));
+  // setting pen colour to white
   painter.setPen(Qt::white);
-
-  // draw the text
+  // draws the text
+  // adds and updates the score value using the m_score variable
   painter.drawText(QPoint(12, 40), "score: " + QString::number(m_score));
 }
-
 //----------------------------------------------------------------------------------------------------------------------
 
 void NGLScene::keyPressEvent(QKeyEvent *_event)
@@ -726,13 +865,13 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   }
   update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::keyReleaseEvent(QKeyEvent *_event)
 {
   // remove from our key set any keys that have been released
   m_keysPressed -= static_cast<Qt::Key>(_event->key());
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::timerEvent(QTimerEvent *_event) {
  if (_event->timerId() == m_moveTimer)
   {
@@ -740,6 +879,5 @@ void NGLScene::timerEvent(QTimerEvent *_event) {
     // // re-draw GL
     update();
   }
-
 }
 
