@@ -222,8 +222,13 @@ private:
   int modTimeCount = 0;
   //----------------------------------------------------------------------------------------------------------------------
   int m_xEnemyDirection = 0;
-
-  int totalEnemyKilled = 0;
+  int m_totalEnemyKilled = 0;
+  // define the start and end hues for the gradient
+  float m_startHue = 0.0f;
+  float m_endHue = 300.0f;
+  // define the reduced saturation and increased brightness for the pastel effect
+  float m_saturation = 0.5f;
+  float m_value = 1.2f;
 
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief method to load transform matrices to the shader
@@ -298,6 +303,8 @@ private:
   //----------------------------------------------------------------------------------------------------------------------
   void mapBlockFunc(BlockSelector* mapBlockot, int countNumBlock, ngl::Vec4 fillColour, ngl::Vec4 outlineColour, ngl::Vec3 blockPosition);
   //----------------------------------------------------------------------------------------------------------------------
+  ngl::Vec4 calculatePastelColor(float hue, float saturation, float value);
+
 };
 
 

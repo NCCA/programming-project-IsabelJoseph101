@@ -33,7 +33,49 @@ void NGLScene::resetBlockSelector()
   m_BlockSelectorArray.resize(m_numBlockSelector);
   std::generate(std::begin(m_BlockSelectorArray), std::end(m_BlockSelectorArray), [this](){return BlockSelector();});
 }
+//----------------------------------------------------------------------------------------------------------------------
+ngl::Vec4 NGLScene::calculatePastelColor(float hue, float saturation, float value)
+{
+  // calculate the RGB values for the pastel color
+  float c = saturation * value;
+  float x = c * (1.0f - std::abs(std::fmod(hue / 60.0f, 2.0f) - 1.0f));
+  float m = value - c;
+  float r, g, b;
+  if (hue < 60.0f) {
+    r = c;
+    g = x;
+    b = 0.0f;
+  } else if (hue < 120.0f) {
+    r = x;
+    g = c;
+    b = 0.0f;
+  } else if (hue < 180.0f) {
+    r = 0.0f;
+    g = c;
+    b = x;
+  } else if (hue < 240.0f) {
+    r = 0.0f;
+    g = x;
+    b = c;
+  } else if (hue < 300.0f) {
+    r = x;
+    g = 0.0f;
+    b = c;
+  } else {
+    r = c;
+    g = 0.0f;
+    b = x;
+  }
 
+  // adjust the RGB values for the pastel effect
+  r = r * 0.8f + 0.6f;
+  g = g * 0.8f + 0.6f;
+  b = b * 0.8f + 0.6f;
+
+  // return a Vec4 color from the RGB values
+  return ngl::Vec4(r, g, b, 1.0f);
+}
+//----------------------------------------------------------------------------------------------------------------------
 // test AABB collisions
 //----------------------------------------------------------------------------------------------------------------------
 int NGLScene::checkAABBCollision( const ngl::Vec3& box1Pos, float box1Width, float box1Depth, float box1Height, 
@@ -346,62 +388,19 @@ void NGLScene::paintGL()
 
   // std::cout<<"time count = "<<m_timeCount<<" keyPauseSeprate = "<<m_keyPressTimer<< "\n";
   //----------------------------------------------------------------------------------------------------------------------
-  int countNumBlock = 1;
-
-  // define the start and end hues for the gradient
-  float startHue = 0.0f;
-  float endHue = 300.0f;
-
-  // define the reduced saturation and increased brightness for the pastel effect
-  float saturation = 0.5f;
-  float value = 1.2f;
-
+  int countNumBlock = 0;
   for (int row = 0; row < nrRows; ++row)
   {
     for (int col = 0; col < nrColumns; ++col)
     {
       // calculate the hue for this block based on its position in the grid
       float t = static_cast<float>(col) / static_cast<float>(nrColumns - 1);
-      float hue = startHue + (t * (endHue - startHue));
+      float hue = m_startHue + (t * (m_endHue - m_startHue));
 
-      // calculate the RGB values for the pastel color
-      float c = saturation * value;
-      float x = c * (1.0f - std::abs(std::fmod(hue / 60.0f, 2.0f) - 1.0f));
-      float m = value - c;
-      float r, g, b;
-      if (hue < 60.0f) {
-        r = c;
-        g = x;
-        b = 0.0f;
-      } else if (hue < 120.0f) {
-        r = x;
-        g = c;
-        b = 0.0f;
-      } else if (hue < 180.0f) {
-        r = 0.0f;
-        g = c;
-        b = x;
-      } else if (hue < 240.0f) {
-        r = 0.0f;
-        g = x;
-        b = c;
-      } else if (hue < 300.0f) {
-        r = x;
-        g = 0.0f;
-        b = c;
-      } else {
-        r = c;
-        g = 0.0f;
-        b = x;
-      }
+      // calculate the pastel color for this block
+      ngl::Vec4 color = calculatePastelColor(hue, m_saturation, m_value);
 
-      // adjust the RGB values for the pastel effect
-      r = r * 0.8f + 0.6f;
-      g = g * 0.8f + 0.6f;
-      b = b * 0.8f + 0.6f;
-
-      // create a Vec4 color from the RGB values and pass it to the mapBlockFunc function
-      ngl::Vec4 color = ngl::Vec4(r, g, b, 1.0f);
+      // pass the color to the mapBlockFunc function
       mapBlockFunc(mapBlock, countNumBlock, color, white, ngl::Vec3(static_cast<float>(col - (nrColumns / 2)) * spacing, -1, static_cast<float>(row - (nrRows / 2)) * spacing));
 
       // incremental value
@@ -411,7 +410,6 @@ void NGLScene::paintGL()
 
 //----------------------------------------------------------------------------------------------------------------------
   // start of enemy blocks
-// start of enemy blocks
   // offset in x direction
   int gapSpace = 3;
   int enemyXOffset = gapSpace;
@@ -433,7 +431,8 @@ void NGLScene::paintGL()
   // moves enemies based on time count
   if (m_timeCount ==  moveDownInterval) 
   {
-    m_zEnemyLoc = m_zEnemyLoc + enemyZOffset; // move blocks down
+    // move blocks down
+    m_zEnemyLoc = m_zEnemyLoc + enemyZOffset; 
     moveDownCounter = 0; // reset move down counter
   }
   else
@@ -448,8 +447,6 @@ void NGLScene::paintGL()
   } else if (m_xEnemyLoc <= -10){
     m_xEnemyDirection = 0;
   }
-  
-  std::cout<<"m_xEnemyLoc = "<<m_xEnemyLoc<<" m_xEnemyDirection = "<<m_xEnemyDirection<<"\n";
 
   if (m_xEnemyDirection == 0) 
   {
@@ -531,7 +528,7 @@ void NGLScene::paintGL()
       {
         // denotes that an enemy has been killed and sets value to 1
         enemyBlocks[t].m_hasBeenKilled = 1.0f;
-        totalEnemyKilled++;
+        m_totalEnemyKilled++;
         // changes position to off screen if hit
         bulletShot[u].m_position = ngl::Vec3(0.0f, -100.0f, 10.0f);
         bulletShot[u].m_hasBeenFired = 0;
@@ -543,9 +540,9 @@ void NGLScene::paintGL()
 
   //----------------------------------------------------------------------------------------------------------------------
   // check if there are no enemies left
-  std::cout<<"totalEnemyKilled = "<<totalEnemyKilled<<"\n";
+  std::cout<<"totalEnemyKilled = "<<m_totalEnemyKilled<<"\n";
 
-  if (totalEnemyKilled >= actualTotal+3)
+  if (m_totalEnemyKilled >= actualTotal + 4)
   {
     
     // create a new painter
