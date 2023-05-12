@@ -542,7 +542,7 @@ void NGLScene::paintGL()
   // check if there are no enemies left
   std::cout<<"totalEnemyKilled = "<<m_totalEnemyKilled<<"\n";
 
-  if (m_totalEnemyKilled >= actualTotal + 4)
+  if (m_totalEnemyKilled >= actualTotal + 6)
   {
     
     // create a new painter

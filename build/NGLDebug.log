@@ -1,49 +1,49 @@
 -------------------------------------------------------------------------------
-[07:13PM] NGL configured with 
-[07:13PM] OpenGL 4.5.0 NVIDIA 515.43.04
-[07:13PM] GLSL version 4.50 NVIDIA
+[07:17PM] NGL configured with 
+[07:17PM] OpenGL 4.5.0 NVIDIA 515.43.04
+[07:17PM] GLSL version 4.50 NVIDIA
 -------------------------------------------------------------------------------
-[07:13PM] creating empty ShaderProgram nglTextShader
-[07:13PM] just attached nglTextVertex to ngl::ShaderLib
-[07:13PM] just attached nglTextFragment to ngl::ShaderLib
-[07:13PM] Compiling Shader nglTextVertex
-[07:13PM] Compiling Shader nglTextFragment
-[07:13PM] nglTextVertex attached to program
-[07:13PM] nglTextFragment attached to program
-[07:13PM] Linking nglTextShader
-[07:13PM] linking Shader nglTextShader 
+[07:17PM] creating empty ShaderProgram nglTextShader
+[07:17PM] just attached nglTextVertex to ngl::ShaderLib
+[07:17PM] just attached nglTextFragment to ngl::ShaderLib
+[07:17PM] Compiling Shader nglTextVertex
+[07:17PM] Compiling Shader nglTextFragment
+[07:17PM] nglTextVertex attached to program
+[07:17PM] nglTextFragment attached to program
+[07:17PM] Linking nglTextShader
+[07:17PM] linking Shader nglTextShader 
 FOUND UNIFORM BLOCKS 0
 FOUND UNIFORM BLOCKS 0
-[07:13PM] creating empty ShaderProgram nglColourShader
-[07:13PM] just attached nglColourVertex to ngl::ShaderLib
-[07:13PM] just attached nglColourFragment to ngl::ShaderLib
-[07:13PM] Compiling Shader nglColourVertex
-[07:13PM] Compiling Shader nglColourFragment
-[07:13PM] nglColourVertex attached to program
-[07:13PM] nglColourFragment attached to program
-[07:13PM] Linking nglColourShader
-[07:13PM] linking Shader nglColourShader 
+[07:17PM] creating empty ShaderProgram nglColourShader
+[07:17PM] just attached nglColourVertex to ngl::ShaderLib
+[07:17PM] just attached nglColourFragment to ngl::ShaderLib
+[07:17PM] Compiling Shader nglColourVertex
+[07:17PM] Compiling Shader nglColourFragment
+[07:17PM] nglColourVertex attached to program
+[07:17PM] nglColourFragment attached to program
+[07:17PM] Linking nglColourShader
+[07:17PM] linking Shader nglColourShader 
 FOUND UNIFORM BLOCKS 0
 FOUND UNIFORM BLOCKS 0
-[07:13PM] creating empty ShaderProgram nglDiffuseShader
-[07:13PM] just attached nglDiffuseVertex to ngl::ShaderLib
-[07:13PM] just attached nglDiffuseFragment to ngl::ShaderLib
-[07:13PM] Compiling Shader nglDiffuseVertex
-[07:13PM] Compiling Shader nglDiffuseFragment
-[07:13PM] nglDiffuseVertex attached to program
-[07:13PM] nglDiffuseFragment attached to program
-[07:13PM] Linking nglDiffuseShader
-[07:13PM] linking Shader nglDiffuseShader 
+[07:17PM] creating empty ShaderProgram nglDiffuseShader
+[07:17PM] just attached nglDiffuseVertex to ngl::ShaderLib
+[07:17PM] just attached nglDiffuseFragment to ngl::ShaderLib
+[07:17PM] Compiling Shader nglDiffuseVertex
+[07:17PM] Compiling Shader nglDiffuseFragment
+[07:17PM] nglDiffuseVertex attached to program
+[07:17PM] nglDiffuseFragment attached to program
+[07:17PM] Linking nglDiffuseShader
+[07:17PM] linking Shader nglDiffuseShader 
 FOUND UNIFORM BLOCKS 0
 FOUND UNIFORM BLOCKS 0
-[07:13PM] creating empty ShaderProgram nglCheckerShader
-[07:13PM] just attached nglCheckerVertex to ngl::ShaderLib
-[07:13PM] just attached nglCheckerFragment to ngl::ShaderLib
-[07:13PM] Compiling Shader nglCheckerVertex
-[07:13PM] Compiling Shader nglCheckerFragment
-[07:13PM] nglCheckerVertex attached to program
-[07:13PM] nglCheckerFragment attached to program
-[07:13PM] Linking nglCheckerShader
-[07:13PM] linking Shader nglCheckerShader 
+[07:17PM] creating empty ShaderProgram nglCheckerShader
+[07:17PM] just attached nglCheckerVertex to ngl::ShaderLib
+[07:17PM] just attached nglCheckerFragment to ngl::ShaderLib
+[07:17PM] Compiling Shader nglCheckerVertex
+[07:17PM] Compiling Shader nglCheckerFragment
+[07:17PM] nglCheckerVertex attached to program
+[07:17PM] nglCheckerFragment attached to program
+[07:17PM] Linking nglCheckerShader
+[07:17PM] linking Shader nglCheckerShader 
 FOUND UNIFORM BLOCKS 0
 FOUND UNIFORM BLOCKS 0
