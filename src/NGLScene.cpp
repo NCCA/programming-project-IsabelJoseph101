@@ -428,6 +428,8 @@ void NGLScene::paintGL()
   // counter to track time for move down interval
   int moveDownCounter = 0;
 
+  int actualTotal = 0;
+
   // moves enemies based on time count
   if (m_timeCount ==  moveDownInterval) 
   {
@@ -449,9 +451,11 @@ void NGLScene::paintGL()
   
   std::cout<<"m_xEnemyLoc = "<<m_xEnemyLoc<<" m_xEnemyDirection = "<<m_xEnemyDirection<<"\n";
 
-  if (m_xEnemyDirection == 0) {
+  if (m_xEnemyDirection == 0) 
+  {
     m_xEnemyLoc = m_xEnemyLoc + enemySpeed;
-  } else if (m_xEnemyDirection == 1){
+  } else if (m_xEnemyDirection == 1)
+  {
     m_xEnemyLoc = m_xEnemyLoc - enemySpeed;
   }
   // m_xEnemyLoc += (m_timeCount >= 0 && m_timeCount < 20) ? enemySpeed : -enemySpeed;
@@ -467,7 +471,7 @@ void NGLScene::paintGL()
     {  
       // calculate the index of the block in the 1D array
       int index = i * 8 + j;
-
+      actualTotal++;
       // calculate the color of the block based on the pulsing effect
       float pulsation = sin(frequency * m_timeCount);
       // starts from red and switches to black
@@ -527,6 +531,7 @@ void NGLScene::paintGL()
       {
         // denotes that an enemy has been killed and sets value to 1
         enemyBlocks[t].m_hasBeenKilled = 1.0f;
+        totalEnemyKilled++;
         // changes position to off screen if hit
         bulletShot[u].m_position = ngl::Vec3(0.0f, -100.0f, 10.0f);
         bulletShot[u].m_hasBeenFired = 0;
@@ -537,21 +542,26 @@ void NGLScene::paintGL()
   }
 
   //----------------------------------------------------------------------------------------------------------------------
-  // check if any enemies are left
-  int enemiesLeft = 0;
-  for (int i = 0; i < numOfEnemies; i++)
-  {
-    if (enemyBlocks[i].m_hasBeenKilled == 0)
-    {
-      enemiesLeft = 1;
-      break;
-    }
-  }
+  // check if there are no enemies left
+  std::cout<<"totalEnemyKilled = "<<totalEnemyKilled<<"\n";
 
-  if (enemiesLeft == 0)
+  if (totalEnemyKilled >= actualTotal+3)
   {
-    std::cout << "all enemies have been killed" << std::endl;
+    
+    // create a new painter
+    QPainter win(this);
+    // set the composition mode to only affect the text
+    win.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+    // set the font and pen color for the text
+    win.setFont(QFont("Helvetica", 90));
+    // set pen colour to white
+    win.setPen(Qt::white);
+    // draw the text
+    win.drawText(QPoint(200, 200), "You have saved the universe!");
   }
+        
+  
   //----------------------------------------------------------------------------------------------------------------------
 
   for (int barrier = 0; barrier < numOfBarriers; barrier++)
