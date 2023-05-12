@@ -51,7 +51,7 @@ int NGLScene::checkAABBCollision( const ngl::Vec3& box1Pos, float box1Width, flo
         box1Min.m_z <= box2Max.m_z && box1Max.m_z >= box2Min.m_z)
     {
         // returns if boxes are colliding
-        std::cout<<"Collision detected ---------------------------------------------"<<"\n"; 
+        // std::cout<<"Collision detected ---------------------------------------------"<<"\n"; 
         return 1;
     } 
     else 
@@ -416,7 +416,7 @@ void NGLScene::paintGL()
   int gapSpace = 3;
   int enemyXOffset = gapSpace;
   // offset in z direction
-  int enemyZOffset = -gapSpace;
+  int enemyZOffset = 1;
   // speed that enemy blocks move in
   float enemySpeed = 0.09f;
 
@@ -424,14 +424,14 @@ void NGLScene::paintGL()
   float frequency = 0.5f;
 
   // interval for enemy blocks to move down
-  int moveDownInterval = 50;
+  int moveDownInterval = 250;
   // counter to track time for move down interval
   int moveDownCounter = 0;
 
   // moves enemies based on time count
   if (m_timeCount ==  moveDownInterval) 
   {
-    m_zEnemyLoc += enemyZOffset; // move blocks down
+    m_zEnemyLoc = m_zEnemyLoc + enemyZOffset; // move blocks down
     moveDownCounter = 0; // reset move down counter
   }
   else
@@ -622,7 +622,7 @@ void NGLScene::paintGL()
         bulletShot[m_blockNumToShoot].m_hasBeenFired = 1;
         std::cout<<"Bullet number "<<m_blockNumToShoot<<"\n";
 
-        if (m_blockNumToShoot < 499) 
+        if (m_blockNumToShoot <= (m_numBulletShot-1)) 
           {
             m_blockNumToShoot++;
           } 
