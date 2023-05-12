@@ -18,3 +18,13 @@
 215	2309	1683889149	CMakeFiles/FirstPersonCamera.dir/src/main.cpp.o	7ec108e65247b404
 215	2753	1683889149	CMakeFiles/FirstPersonCamera.dir/src/NGLScene.cpp.o	31b047013bcd7468
 2753	3408	1683889150	FirstPersonCamera	7116f5d4853b90cf
+9	51	1683889200	FirstPersonCamera_autogen/timestamp	b92e1780f4f71042
+51	1636	1683889201	CMakeFiles/FirstPersonCamera.dir/FirstPersonCamera_autogen/mocs_compilation.cpp.o	f411ae6cadffa399
+51	2565	1683889202	CMakeFiles/FirstPersonCamera.dir/src/NGLScene.cpp.o	31b047013bcd7468
+2565	3246	1683889203	FirstPersonCamera	7116f5d4853b90cf
+79	288	1683889273	FirstPersonCamera_autogen/timestamp	b92e1780f4f71042
+288	1901	1683889275	CMakeFiles/FirstPersonCamera.dir/FirstPersonCamera_autogen/mocs_compilation.cpp.o	f411ae6cadffa399
+288	1970	1683889275	CMakeFiles/FirstPersonCamera.dir/src/NGLSceneMouseControls.cpp.o	1283f3245813b829
+288	2379	1683889275	CMakeFiles/FirstPersonCamera.dir/src/main.cpp.o	7ec108e65247b404
+288	2863	1683889276	CMakeFiles/FirstPersonCamera.dir/src/NGLScene.cpp.o	31b047013bcd7468
+2863	3550	1683889277	FirstPersonCamera	7116f5d4853b90cf
